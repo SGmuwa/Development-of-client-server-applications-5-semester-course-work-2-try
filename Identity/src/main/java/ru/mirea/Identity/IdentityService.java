@@ -1,22 +1,23 @@
 package ru.mirea.Identity;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.mirea.Tokens.PayloadToken;
+import ru.mirea.Tokens.TokenFactory;
+
+import java.util.Collections;
 
 @Service
 public class IdentityService {
 
     private DBConnection dbConnection;
-    private String secret_key;
 
     @Autowired
     public IdentityService(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
-        this.secret_key = "sdkfda";
     }
 
-    public Token getToken(String login, String password) throws Exception {
+    public String getToken(String login, String password) throws Exception {
         User user = dbConnection.getUser(login);
         if (user == null) {
             throw new Exception("Пользователь не найден");
@@ -24,12 +25,10 @@ public class IdentityService {
         if (!user.getPassword().equals(password)) {
             throw new Exception("Неверный пароль");
         }
-        String signature = DigestUtils.sha256Hex(Integer.toString(user.getId())+user.getLogin()+user.getRole()+secret_key);
-        return new Token(user.getId(),user.getLogin(), user.getRole(), signature);
-
+        return TokenFactory.generateToken(new PayloadToken(user.getId(), user.getLogin(), Collections.singletonList(user.getRole())));
     }
 
-    public Token addUser(String login, String password) throws Exception {
+    public String addUser(String login, String password) throws Exception {
         User user = dbConnection.getUser(login);
         if (user == null) {
             dbConnection.addUser(login, password, "user");

@@ -32,7 +32,11 @@ public class TokenFactory {
      * @return Данные пользователя. Null, если ошибка.
      */
     public static PayloadToken decoderToken(String token) {
+        if(token == null || token.length() == 0)
+            return null;
         String[] tokenArray = token.split("\\.");
+        if(tokenArray.length != 3)
+            return null;
         String headerSTR = new String(Base64.getDecoder().decode(tokenArray[0]));
         String payloadSTR = new String(Base64.getDecoder().decode(tokenArray[1]));
         String signature = tokenArray[2];

@@ -14,6 +14,7 @@
         <module>ItemService</module>
         <module>Identity</module>
         <module>Tokens</module>
+        <module>defaultFilter</module>
     </modules>
 
     <build>

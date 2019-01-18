@@ -17,13 +17,13 @@ public class IdentityController {
 
     @RequestMapping(value = "auth", method = RequestMethod.POST)
     @ResponseBody
-    public Token getToken(@RequestBody User user) throws Exception {
+    public String getToken(@RequestBody User user) throws Exception {
         return identityService.getToken(user.getLogin(), user.getPassword());
     }
 
     @RequestMapping(value = "sign/up", method = RequestMethod.POST)
     @ResponseBody
-    public Token addUser(@RequestBody User user) throws Exception {
+    public String addUser(@RequestBody User user) throws Exception {
         return identityService.addUser(user.getLogin(), user.getPassword());
     }
 }

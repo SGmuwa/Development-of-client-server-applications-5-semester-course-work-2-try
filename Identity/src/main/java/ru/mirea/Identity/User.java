@@ -1,10 +1,12 @@
 package ru.mirea.Identity;
 
+import ru.mirea.Tokens.Role;
+
 public class User {
     private int id;
     private String login;
     private String password;
-    private String role;
+    private Role role;
 
     public User() {}
 
@@ -12,7 +14,7 @@ public class User {
         this.id = id;
         this.login = login;
         this.password = password;
-        this.role = role;
+        this.role = Role.valueOf(role);
     }
 
     public int getId() {
@@ -23,7 +25,7 @@ public class User {
         return login;
     }
 
-    public String  getRole() {
+    public Role getRole() {
         return role;
     }
 
@@ -39,7 +41,7 @@ public class User {
         this.password = password;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

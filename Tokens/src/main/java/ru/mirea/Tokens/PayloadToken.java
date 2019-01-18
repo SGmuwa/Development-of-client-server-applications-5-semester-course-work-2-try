@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +25,12 @@ public class PayloadToken {
         this.id = id;
         this.login = login;
         this.role = role;
+    }
+
+    public PayloadToken(int id, String login, Role role) {
+        this.id = id;
+        this.login = login;
+        this.role = Collections.singletonList(role);
     }
 
     public int getId() {

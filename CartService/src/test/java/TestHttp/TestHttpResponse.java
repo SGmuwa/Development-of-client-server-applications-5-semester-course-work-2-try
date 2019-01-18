@@ -10,19 +10,23 @@ import org.springframework.http.HttpEntity;
         import org.springframework.http.ResponseEntity;
         import org.springframework.web.client.RestTemplate;
         import ru.mirea.CartService.Item;
-        import ru.mirea.CartService.Token;
+import ru.mirea.Tokens.PayloadToken;
+import ru.mirea.Tokens.Role;
+import ru.mirea.Tokens.TokenFactory;
 
 import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static ru.mirea.Tokens.Role.ADMIN;
 
 
 public class TestHttpResponse {
     @Test
     public void testing_cart() throws JsonProcessingException {
-        int id = 1;
         String tokenStr;
-        final String secret_key = "sdkfda";
-        String signature = DigestUtils.sha256Hex("-1" + "loginAdmin" + "admin" + secret_key);
-        Token token = new Token(-1, "loginAdmin", "admin", signature);
+        String token = TokenFactory.generateToken(new PayloadToken( -1, "loginAdmin", ADMIN));
 
         ObjectMapper objectMapper = new ObjectMapper();
         tokenStr = objectMapper.writer().writeValueAsString(token);
@@ -36,6 +40,8 @@ public class TestHttpResponse {
 
         ResponseEntity<List<Item>> listResponse2  = restTemplate2.exchange("http://localhost:8081/user/item", HttpMethod.GET, entity,new ParameterizedTypeReference<List<Item>>() {});
         List<Item> itemList = listResponse2.getBody();
+        assertNotNull(itemList);
+        assertTrue(itemList.size() >= 2);
         System.out.println(itemList.get(0).getType()+"   "+ itemList.get(1).getType());
     }
 }

@@ -10,6 +10,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.mirea.Tokens.PayloadToken;
+import ru.mirea.Tokens.Role;
+import ru.mirea.Tokens.TokenFactory;
 
 import java.util.List;
 
@@ -44,8 +47,7 @@ public class ServiceForCart {
 
     public String putItem_inCart(String type, int user_id, int id) throws JsonProcessingException {
 
-        String signature = DigestUtils.sha256Hex("-1" + "admin" +"loginAdmin"+secret_key);
-        Token token = new Token(-1, "loginAdmin","user", signature);
+        String token = TokenFactory.generateToken(new PayloadToken(-1, "loginAdmin", Role.USER));
 
         ObjectMapper objectMapper = new ObjectMapper();
         this.tokenStr = objectMapper.writer().writeValueAsString(token);
