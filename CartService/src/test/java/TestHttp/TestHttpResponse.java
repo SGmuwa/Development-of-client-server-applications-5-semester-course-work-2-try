@@ -21,7 +21,7 @@ public class TestHttpResponse {
         int id = 1;
         String tokenStr;
         final String secret_key = "sdkfda";
-        String signature = DigestUtils.sha256Hex("-1" + "admin" + "loginAdmin" + secret_key);
+        String signature = DigestUtils.sha256Hex("-1" + "loginAdmin" + "admin" + secret_key);
         Token token = new Token(-1, "loginAdmin", "admin", signature);
 
         ObjectMapper objectMapper = new ObjectMapper();
