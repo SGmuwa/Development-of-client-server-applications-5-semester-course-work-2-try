@@ -1,4 +1,4 @@
-package ru.mirea.BalanceService;
+/*package ru.mirea.BalanceService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -44,3 +44,4 @@ public class FilterUserBalance implements Filter {
     @Override
     public void destroy() {}
 }
+*/

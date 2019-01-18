@@ -17,7 +17,7 @@ public class CartController {
 
     @RequestMapping(value = "user/cart/{user_id}/item/{pet_or_stuff}/{id}", method = RequestMethod.PUT)
     @ResponseBody
-    public String cart_putItem(@PathVariable String pet_or_stuff,@PathVariable int user_id,@PathVariable int id)  {
+    public String cart_putItem(@PathVariable String pet_or_stuff,@PathVariable int user_id,@PathVariable int id) throws JsonProcessingException {
         return cs.putItem_inCart(pet_or_stuff,user_id, id);
     }
 
@@ -39,7 +39,6 @@ public class CartController {
     @RequestMapping(value = "user/get_cart/{user_id}", method = RequestMethod.GET)
     @ResponseBody
     public List<Cart> cart_getCart(@PathVariable int user_id) {
-        System.out.println("КОнтроллер");
          return cs.getCart(user_id);
     }
 

@@ -36,6 +36,7 @@ public class BalanceController {
     @ResponseBody
     public String getCurrency(@PathVariable int user_id){return balDbCon.getCurrency(user_id);}
 
+    //Вычитание баланса
     @RequestMapping (value = "admin/update/balance/{id}/{balance}", method = RequestMethod.POST)
     @ResponseBody
     public String updateBalance2(@PathVariable int id,@PathVariable double balance){return balDbCon.updateBalance2(id,balance);}

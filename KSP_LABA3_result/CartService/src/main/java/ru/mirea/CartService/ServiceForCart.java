@@ -27,14 +27,15 @@ public class ServiceForCart {
         this.cartConnect = cartConnect;
     }
 
-    @PostConstruct
+    /*@PostConstruct
     public void init() throws JsonProcessingException {
-        String signature = DigestUtils.sha256Hex("-1" + "admin" +""+secret_key);
-        Token token = new Token(-1, "","admin", signature);
+        String signature = DigestUtils.sha256Hex("-1" + "admin" +"loginAdmin"+secret_key);
+        Token token = new Token(-1, "","user", signature);
 
         ObjectMapper objectMapper = new ObjectMapper();
         this.tokenStr = objectMapper.writer().writeValueAsString(token);
-    }
+
+    }*/
 
     public String deleteCart(int user_id){return cartConnect.deleteCart(user_id);}
 
@@ -43,8 +44,13 @@ public class ServiceForCart {
         return cartConnect.getCart(user_id);
     }
 
-    public String putItem_inCart(String type, int user_id, int id){
+    public String putItem_inCart(String type, int user_id, int id) throws JsonProcessingException {
 
+        String signature = DigestUtils.sha256Hex("-1" + "admin" +"loginAdmin"+secret_key);
+        Token token = new Token(-1, "loginAdmin","user", signature);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.tokenStr = objectMapper.writer().writeValueAsString(token);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Token" , tokenStr);
@@ -53,11 +59,11 @@ public class ServiceForCart {
 
         RestTemplate restTemplate1 = new RestTemplate();
 
-        ResponseEntity<Item> listResponse1  = restTemplate1.exchange("http://localhost:8081+"+"/admin"+"/user/item", HttpMethod.GET,entity ,new ParameterizedTypeReference<Item>() { });
+        ResponseEntity<Item> listResponse1  = restTemplate1.exchange("http://localhost:8081/user/item/{id}", HttpMethod.GET,entity,Item.class,id);
         Item item = listResponse1.getBody();
         //Item item = restTemplate1.getForObject("http://localhost:8081/user/item/{id}", Item.class, id);
         RestTemplate restTemplate2 = new RestTemplate();
-        ResponseEntity<List<Item>> listResponse2  = restTemplate2.exchange("http://localhost:8081+"+"/admin"+"/user/item", HttpMethod.GET, entity,new ParameterizedTypeReference<List<Item>>() { });
+        ResponseEntity<List<Item>> listResponse2  = restTemplate2.exchange("http://localhost:8081/user/item", HttpMethod.GET, entity,new ParameterizedTypeReference<List<Item>>() {});
         List<Item> itemList = listResponse2.getBody();
         if (itemList.get(id-1).getCount() > 0)
             if ((item.getType().equals(type))) {

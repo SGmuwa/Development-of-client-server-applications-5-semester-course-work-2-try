@@ -1,4 +1,4 @@
-package ru.mirea.ItemService;
+/*package ru.mirea.ItemService;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,3 +42,4 @@ public class FilterAdminItem implements Filter{
     @Override
     public void destroy() {}
 }
+*/
