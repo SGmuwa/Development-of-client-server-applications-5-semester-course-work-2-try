@@ -25,7 +25,7 @@ public class DefaultFilter implements Filter {
         PayloadToken payloadToken = TokenFactory.decoderToken(tokenHttp);
 
         if (payloadToken != null) {
-            //Если роль = admin и сигнатуры совпадают
+            //Если роль = admin
             if (payloadToken.getRole().contains(ADMIN))
                 filterChain.doFilter(servletRequest, servletResponse);
             else if (payloadToken.getRole().contains(USER))
