@@ -13,6 +13,7 @@
         <module>CartService</module>
         <module>ItemService</module>
         <module>Identity</module>
+        <module>Tokens</module>
     </modules>
 
     <build>
