@@ -15,6 +15,7 @@
         <module>Identity</module>
         <module>Tokens</module>
         <module>defaultFilter</module>
+        <module>ConfigurationService</module>
     </modules>
 
     <build>
