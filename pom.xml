@@ -12,10 +12,11 @@
         <module>BalanceService</module>
         <module>CartService</module>
         <module>ItemService</module>
-        <module>Identity</module>
+        <module>IdentityService</module>
         <module>Tokens</module>
         <module>defaultFilter</module>
         <module>ConfigurationService</module>
+        <module>TestClientConfiguration</module>
     </modules>
 
     <build>
