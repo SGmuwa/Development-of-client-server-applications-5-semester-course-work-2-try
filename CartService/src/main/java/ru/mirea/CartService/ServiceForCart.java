@@ -21,7 +21,7 @@ import java.util.List;
 public class ServiceForCart {
     private CartDbConnection cartConnect;
     private String tokenStr;
-    final String secret_key = "sdkfda";
+    private final String secret_key = "sdkfda";
     @Autowired
     public ServiceForCart(CartDbConnection cartConnect/*,RESTtEMPLATE */){
         this.cartConnect = cartConnect;
