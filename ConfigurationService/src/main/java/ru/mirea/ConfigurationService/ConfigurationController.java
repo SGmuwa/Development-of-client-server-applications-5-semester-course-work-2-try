@@ -15,8 +15,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+
 @Controller
-@RequestMapping("/*")
+@RequestMapping("/manual/*")
 public class ConfigurationController {
 
     @RequestMapping(value = "{filename}", method = GET)

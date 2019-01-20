@@ -35,6 +35,12 @@
             <version>${versions.spring}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Автоматический сервер конфигураций -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+            <version>2.0.2.RELEASE</version>
+        </dependency>
     </dependencies>
 
 
