@@ -111,8 +111,8 @@ public class ServiceForCart {
                 restTemplate1 = new RestTemplate();
                 //String tmpString1 = restTemplate1.exchange("http://localhost:8081/update/count/{id}", String.class,itId);
                 HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.add("token", TokenFactory.generateToken(...));
-                HttpEntity<String> request = new HttpEntity<>();
+                httpHeaders.add("token", TokenFactory.generateToken(new PayloadToken(-1, "CartService", Role.ADMIN)));
+                HttpEntity<String> request = new HttpEntity<>(httpHeaders);
                 String tmpString1 = restTemplate1.postForObject("http://localhost:8081/admin/update/count/{id}",request, String.class,itId);
 
                 System.out.println(tmpString1+"Результат удаления 1 итема");
