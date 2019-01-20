@@ -110,7 +110,9 @@ public class ServiceForCart {
                 //Удаляем 1 итем каунт--;
                 restTemplate1 = new RestTemplate();
                 //String tmpString1 = restTemplate1.exchange("http://localhost:8081/update/count/{id}", String.class,itId);
-                HttpEntity<String> request = new HttpEntity<>(new String());
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.add("token", TokenFactory.generateToken(...));
+                HttpEntity<String> request = new HttpEntity<>();
                 String tmpString1 = restTemplate1.postForObject("http://localhost:8081/admin/update/count/{id}",request, String.class,itId);
 
                 System.out.println(tmpString1+"Результат удаления 1 итема");
