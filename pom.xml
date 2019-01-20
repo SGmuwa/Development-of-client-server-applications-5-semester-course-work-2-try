@@ -34,6 +34,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <versions.spring>2.1.2.RELEASE</versions.spring>
         <versions.spring.security>5.1.3.RELEASE</versions.spring.security>
+        <versions.spring.cloud-configure-client.spring-cloud-config-client>2.0.2.RELEASE</versions.spring.cloud-configure-client.spring-cloud-config-client>
+        <versions.spring.cloud-configure-client.spring-cloud-starter-bus-amqp>2.0.0.RELEASE</versions.spring.cloud-configure-client.spring-cloud-starter-bus-amqp>
         <versions.h2>1.4.197</versions.h2>
         <versions.KSP_LAB3_result>1.0</versions.KSP_LAB3_result>
     </properties>
