@@ -16,12 +16,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 
-@Controller
-@RequestMapping("/manual/*")
+//@Controller
+//@RequestMapping("/manual/*")
 public class ConfigurationController {
 
-    @RequestMapping(value = "{filename}", method = GET)
-    @ResponseBody
+    //@RequestMapping(value = "{filename}", method = GET)
+    //@ResponseBody
     public ResponseEntity<String> PropertiesCollector(@PathVariable String filename) {
         // Проверка, что файл начинается с буквы. Допускаются английские названия, точки.
         // Заканчивается всегда на .properties.

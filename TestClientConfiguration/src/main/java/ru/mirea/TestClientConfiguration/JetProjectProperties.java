@@ -10,11 +10,13 @@ import org.springframework.stereotype.Component;
 public class JetProjectProperties {
     private final Log log = LogFactory.getLog(getClass());
 
-    private String jet;
+    private String jet = null;
     public String getJet() {
+        log.info("get jet: " + jet);
         return jet;
     }
     public void setJet(String jet) {
+        log.info("set jet: " + jet);
         this.jet = jet;
     }
 }
