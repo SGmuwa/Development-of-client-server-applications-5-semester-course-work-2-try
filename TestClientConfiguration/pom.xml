@@ -34,6 +34,11 @@
             <artifactId>spring-cloud-starter-bus-amqp</artifactId>
             <version>${versions.spring.cloud-configure-client.spring-cloud-starter-bus-amqp}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.1.4.RELEASE</version>
+        </dependency>
     </dependencies>
 
 

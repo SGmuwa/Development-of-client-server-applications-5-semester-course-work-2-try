@@ -1,8 +1,8 @@
-spring:
-  application:
-    name: configuration-client
-  cloud:
-    config:
-      uri: ${vcap.services.configuration-service.credentials.uri:http://localhost:pass:[<?pdf-cr?>]8888}
+#spring:
+#  application:
+#    name: configuration-client
+#  cloud:
+#    config:
+#      uri: ${vcap.services.configuration-service.credentials.uri:http://localhost:pass:[<?pdf-cr?>]8888}
 
 
