@@ -9,9 +9,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-//@RunWith(SpringRunner.class)
 @SpringBootTest
+@RunWith(SpringRunner.class)
 public class TestControllerTest {
 
     public TestControllerTest() {
