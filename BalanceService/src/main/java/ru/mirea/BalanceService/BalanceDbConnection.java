@@ -25,14 +25,14 @@ public class BalanceDbConnection {
     public Balance getBalance(Integer user_id) {
         double tmp;
         CurrencyService cs = new CurrencyService();
-         Balance tempBal =  jdbcTemplate.queryForObject("SELECT * FROM Balance WHERE user_id = ?",
-                 (ResultSet rs, int rowNum) ->
-                 new Balance (rs.getInt("user_id"), rs.getDouble("balance"), rs.getString("currency_name")),
-                 user_id
+        Balance tempBal = jdbcTemplate.queryForObject("SELECT * FROM Balance WHERE user_id = ?",
+                (ResultSet rs, int rowNum) ->
+                        new Balance(rs.getInt("user_id"), rs.getLong("balance"), rs.getString("currency_name")),
+                user_id
         );
-         tmp = cs.getCurrency(tempBal.getBalance(), tempBal.getCurrency_name());
-         tempBal.setBalance(tmp);
-         return tempBal;
+        tmp = cs.getCurrency(tempBal.getBalance(), tempBal.getCurrency_name());
+        tempBal.setBalance(tmp);
+        return tempBal;
     }
 
 
