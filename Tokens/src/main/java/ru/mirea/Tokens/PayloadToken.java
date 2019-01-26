@@ -17,14 +17,16 @@ public class PayloadToken {
     public PayloadToken() {
         id = Integer.MIN_VALUE;
         login = "";
-        role = new ArrayList<Role>();
-        role.add(Role.GUEST);
+        role = Collections.emptyList();
     }
 
     public PayloadToken(int id, String login, List<Role> role) {
         this.id = id;
         this.login = login;
-        this.role = role;
+        if(role != null)
+            this.role = role;
+        else
+            this.role = Collections.emptyList();
     }
 
     public PayloadToken(int id, String login, Role role) {

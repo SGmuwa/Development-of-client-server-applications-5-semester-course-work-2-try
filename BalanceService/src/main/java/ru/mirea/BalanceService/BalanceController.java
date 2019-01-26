@@ -9,6 +9,7 @@ import ru.mirea.Tokens.TokenFactory;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import java.util.Collection;
 import java.util.Enumeration;
 
 @Controller
@@ -34,12 +35,15 @@ public class BalanceController {
 
     /**
      * Узнаём все кошельки пользователя.
-     * @param user_id Идентификатор
-     * @return
+     * @param token Токен, в котором хранится идентификатор пользователя.
+     * @return Здесь расписаны все кошельки пользователя.
      */
-    @RequestMapping (value = "user/balance/{user_id}", method = RequestMethod.GET)
+    @RequestMapping (value = "user/balance", method = RequestMethod.GET)
     @ResponseBody
-    public Balance getBalance(@PathVariable int user_id){return balDbCon.getBalance(user_id);}
+    public ResponseEntity<Collection<Money>> getBalance(@RequestHeader("token") String token) {
+        int user_id = TokenFactory.decoderToken(token).getId();
+        return balDbCon.getBalance(user_id);
+    }
 
     @RequestMapping (value = "user/balance/change_currency/{user_id}/{change_currency}", method = RequestMethod.PUT)
     @ResponseBody

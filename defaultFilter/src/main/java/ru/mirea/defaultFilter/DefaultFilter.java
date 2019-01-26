@@ -1,4 +1,6 @@
 package ru.mirea.defaultFilter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import ru.mirea.Tokens.PayloadToken;
 import ru.mirea.Tokens.TokenFactory;
@@ -15,12 +17,17 @@ import static ru.mirea.Tokens.Role.USER;
 @WebFilter(urlPatterns = {"/*"})
 public class DefaultFilter implements Filter {
 
+    Log log = LogFactory.getLog(getClass());
+
     @Override
     public void init(FilterConfig filterConfig) {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("Фильтр 2");
+        log.info("filter 2");
+        if(!(servletRequest instanceof HttpServletRequest)) {
+            throw new ServletException("Only http");
+        }
         String tokenHttp = ((HttpServletRequest)servletRequest).getHeader("token");
         PayloadToken payloadToken = TokenFactory.decoderToken(tokenHttp);
 
@@ -31,14 +38,14 @@ public class DefaultFilter implements Filter {
             else if (payloadToken.getRole().contains(USER))
                 filterChain.doFilter(servletRequest, servletResponse);
             else {
-                System.out.println("НЕВАЛИДНЫЙ ТОКЕН!!!");
+                log.warn("unknown role: " + payloadToken.getRole());
                 throw new ServletException("Ошибка прав доступа. Пожалуйста войдите ещё раз!");
             }
         }
         else {
+            log.info("Filter and user fail: " + tokenHttp);
             throw new ServletException("Требуется вход в систему");
         }
-
     }
 
     @Override

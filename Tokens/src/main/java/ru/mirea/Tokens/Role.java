@@ -5,15 +5,13 @@ import org.springframework.security.core.GrantedAuthority;
 /**
  * Данное перечисление необходимо для обозначения, какие роли
  * могут иметь пользователи системы.
- *
-  {@code
-  * role = Role.ADMIN;
- *
-  * if(user.role.getAuthority() == "ADMIN") {
- *
-  * } else
-  * return;
-  }
+ * <code>                                           <br/>
+ * role = Role.ADMIN;                               <br/>
+ * if(user.role.getAuthority() == "ADMIN") {        <br/>
+ * } else                                           <br/>
+ * return;                                          <br/>
+ * }
+ * </code>
  */
 public enum Role implements GrantedAuthority {
     /**
@@ -23,11 +21,7 @@ public enum Role implements GrantedAuthority {
     /**
      * Пользователь
      */
-    USER,
-    /**
-     * Гость
-     */
-    GUEST;
+    USER;
 
     public String getAuthority() {
         return name();
