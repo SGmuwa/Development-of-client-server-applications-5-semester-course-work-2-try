@@ -1,11 +1,10 @@
 package ru.mirea.BalanceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import ru.mirea.Tokens.TokenFactory;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -18,12 +17,26 @@ public class BalanceController {
     @Autowired
     private BalanceDbConnection balDbCon;
 
-    @RequestMapping(value = "user/balance/{id}/{bal}", method = RequestMethod.PUT)
+    /**
+     * Пополнение баланса пользователя.
+     * @param token Токен пользователя, к которому надо присвоить баланс.
+     * @param curName Какая валюта у пользователя?
+     * @param plus Какой баланс ему необходимо присвоить.
+     * @return ok, если операция прошла успешно. Иначе - not found.
+     */
+    @RequestMapping(value = "user/balance/{curName}/{plus}", method = RequestMethod.PUT)
     @ResponseBody
-    public String putBalance(@PathVariable int id, @PathVariable long bal) throws ServletException {
-        return balDbCon.updateBalance(id, bal);
+    public ResponseEntity putBalance(@RequestHeader("token") String token, @PathVariable String curName, @PathVariable long plus) {
+        int user_id = TokenFactory.decoderToken(token).getId();
+        balDbCon.updateBalance(user_id, curName, plus);
+        return ResponseEntity.ok().build();
     }
 
+    /**
+     * Узнаём все кошельки пользователя.
+     * @param user_id Идентификатор
+     * @return
+     */
     @RequestMapping (value = "user/balance/{user_id}", method = RequestMethod.GET)
     @ResponseBody
     public Balance getBalance(@PathVariable int user_id){return balDbCon.getBalance(user_id);}
