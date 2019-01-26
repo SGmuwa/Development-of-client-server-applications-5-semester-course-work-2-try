@@ -16,13 +16,19 @@ public class BalanceDbConnection {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    //получить баланс//Связь с валютой
-    public Balance getBalance(int user_id) {
-        double tmp=0;
+    /**
+     * Получение баланса по идентификатору пользователя.
+     * Запрос идёт базе данных.
+     * @param user_id Идентификатор пользователя.
+     * @return Баланс заданного пользователя.
+     */
+    public Balance getBalance(Integer user_id) {
+        double tmp;
         CurrencyService cs = new CurrencyService();
-         Balance tempBal =  jdbcTemplate.queryForObject("SELECT * FROM Balance WHERE user_id = ?", new Object[]{user_id}, (ResultSet rs, int rowNum) ->{
-                return new Balance (rs.getInt("user_id"), rs.getDouble("balance"), rs.getString("currency_name"));
-            }
+         Balance tempBal =  jdbcTemplate.queryForObject("SELECT * FROM Balance WHERE user_id = ?",
+                 (ResultSet rs, int rowNum) ->
+                 new Balance (rs.getInt("user_id"), rs.getDouble("balance"), rs.getString("currency_name")),
+                 user_id
         );
          tmp = cs.getCurrency(tempBal.getBalance(), tempBal.getCurrency_name());
          tempBal.setBalance(tmp);
