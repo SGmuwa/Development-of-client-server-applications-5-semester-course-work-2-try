@@ -14,7 +14,7 @@ public class Money {
      *                   разменных денежных единиц</a> в кошельке.
      * @param currency Валюта денежных единиц кошелька..
      */
-    public Money(long countPenny, CurrencyConvert currency) {
+    public Money(long countPenny, String currency) {
         if(currency == null)
             throw new NullPointerException("currency");
         this.countPenny = countPenny;
@@ -31,7 +31,7 @@ public class Money {
     /**
      * Валюта, в которой содержится баланс.
      */
-    private final CurrencyConvert currency;
+    private final String currency;
 
     /**
      * Получение текущего кошелька в эквиваленте кошелька с требуемой валютой.
@@ -56,14 +56,14 @@ public class Money {
     /**
      * @seenizer countPenny
      */
-    public long getCountPenny() {
+    long getCountPenny() {
         return countPenny;
     }
 
     /**
      * @seenizer currency
      */
-    public CurrencyConvert getCurrency() {
+    String getCurrency() {
         return currency;
     }
 
@@ -97,20 +97,8 @@ public class Money {
         return new Money(Math.addExact(countPenny, value), currency);
     }
 
-    Money plus(Money value) {
-        if(!this.currency.equals(value.currency))
-            value = value.convert(this.currency);
-        return plus(value.countPenny);
-    }
-
     Money minus(long value) {
         return new Money(Math.subtractExact(countPenny, value), currency);
-    }
-
-    Money minus(Money value) {
-        if(!this.currency.equals(value.currency))
-            value = value.convert(this.currency);
-        return minus(value.countPenny);
     }
 
     /**
@@ -127,6 +115,14 @@ public class Money {
         // Столько получит каждый человек.
         long pennyForEvery = countPenny/count;
         // Столько человек получит дополнительно по одной копейке.
-        long countOfPeopleWhoGetPlusOnePenny;
+        long countOfPeopleWhoGetPlusOnePenny = countPenny % count;
+        for(short i = 0; i < count; i++) {
+            pennyForEvery += 1;
+            if(countOfPeopleWhoGetPlusOnePenny-- == 0) {
+                pennyForEvery -= 1;
+            }
+            out.add(new Money(pennyForEvery, currency));
+        }
+        return out;
     }
 }
