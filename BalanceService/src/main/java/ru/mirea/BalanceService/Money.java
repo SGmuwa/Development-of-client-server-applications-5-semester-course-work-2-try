@@ -1,7 +1,6 @@
 package ru.mirea.BalanceService;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Описывает состояние кошелька, который может хранить в себе только одну валюту.
@@ -15,7 +14,7 @@ public class Money {
      *                   разменных денежных единиц</a> в кошельке.
      * @param currency Валюта денежных единиц кошелька..
      */
-    public Money(long countPenny, Currency currency) {
+    public Money(long countPenny, CurrencyConvert currency) {
         if(currency == null)
             throw new NullPointerException("currency");
         this.countPenny = countPenny;
@@ -32,7 +31,7 @@ public class Money {
     /**
      * Валюта, в которой содержится баланс.
      */
-    private final Currency currency;
+    private final CurrencyConvert currency;
 
     /**
      * Получение текущего кошелька в эквиваленте кошелька с требуемой валютой.
@@ -41,7 +40,7 @@ public class Money {
      * @throws ArithmeticException Конвертация не поддерживается (long overflow). Возможно, сумма слишком большая.
      * @throws NullPointerException Поле {@code target} пустое.
      */
-    Money convert(Currency target) {
+    Money convert(CurrencyConvert target) {
         if (target == null)
             throw new NullPointerException(this.toString());
         return new Money(
@@ -64,7 +63,7 @@ public class Money {
     /**
      * @seenizer currency
      */
-    public Currency getCurrency() {
+    public CurrencyConvert getCurrency() {
         return currency;
     }
 

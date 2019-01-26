@@ -56,7 +56,7 @@ public class BalanceDbConnection {
     //Изменение валюты
     public String changeCurrency(int user_id, String change_currency) {
         jdbcTemplate.update("UPDATE Balance SET currency_name = ? WHERE user_id = ? ", new Object[]{change_currency, user_id});
-        return  "Currency successfully changed";
+        return  "CurrencyConvert successfully changed";
     }
 
 
