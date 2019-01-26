@@ -34,7 +34,7 @@ public class BalanceController {
     }
 
     /**
-     * Узнаём все кошельки пользователя.
+     * Узнаём все кошельки текущего пользователя.
      * @param token Токен, в котором хранится идентификатор пользователя.
      * @return Здесь расписаны все кошельки пользователя.
      */
@@ -42,12 +42,20 @@ public class BalanceController {
     @ResponseBody
     public ResponseEntity<Collection<Money>> getBalance(@RequestHeader("token") String token) {
         int user_id = TokenFactory.decoderToken(token).getId();
-        return balDbCon.getBalance(user_id);
+        return ResponseEntity.ok(balDbCon.getBalance(user_id));
     }
 
+    /**
+     * Пользователь хочет купить валюту.
+     * @param user_id
+     * @param change_currency
+     * @return
+     */
     @RequestMapping (value = "user/balance/change_currency/{user_id}/{change_currency}", method = RequestMethod.PUT)
     @ResponseBody
-    public String changeCurrency(@PathVariable int user_id,@PathVariable String change_currency){return balDbCon.changeCurrency(user_id, change_currency);}
+    public String changeCurrency(@PathVariable int user_id,@PathVariable String change_currency) {
+        return balDbCon.changeCurrency(user_id, change_currency);
+    }
 
     @RequestMapping (value = "user/currency/{user_id}", method = RequestMethod.GET)
     @ResponseBody

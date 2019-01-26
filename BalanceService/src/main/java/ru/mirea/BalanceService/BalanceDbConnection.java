@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.util.Collection;
+import java.util.Optional;
 
 @Component
 public class BalanceDbConnection {
@@ -20,9 +22,9 @@ public class BalanceDbConnection {
      * Получение баланса по идентификатору пользователя.
      * Запрос идёт базе данных.
      * @param user_id Идентификатор пользователя.
-     * @return Баланс заданного пользователя.
+     * @return Баланс заданного пользователя. Not null.
      */
-    public Balance getBalance(Integer user_id) {
+    public Collection<Money> getBalance(Integer user_id) {
         double tmp;
         CurrencyService cs = new CurrencyService();
         Balance tempBal = jdbcTemplate.queryForObject("SELECT * FROM Balance WHERE user_id = ?",

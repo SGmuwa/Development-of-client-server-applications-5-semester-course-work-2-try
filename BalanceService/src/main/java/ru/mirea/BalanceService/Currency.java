@@ -1,5 +1,8 @@
 package ru.mirea.BalanceService;
 
+/**
+ * Описание перевода из одной валюты в другую.
+ */
 public class Currency {
     /**
      * Коэффициент от основной валюты.
