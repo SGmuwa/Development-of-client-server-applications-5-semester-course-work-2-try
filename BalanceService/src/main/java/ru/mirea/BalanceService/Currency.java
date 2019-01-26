@@ -1,20 +1,70 @@
 package ru.mirea.BalanceService;
 
 public class Currency {
-    //Коэффициент от основной валюты. Например, для рубля это 1/70
-    private double multiplicator;
+    /**
+     * Коэффициент от основной валюты.
+     * Отвечает на вопрос, сколько нужно дать 0,000001 единиц валюты (0,0001 десятичных едениц валюты),
+     * чтобы получить 1 единицу основной валюты. Например, для рубля это 1000000*70 = 70000000.
+     * То есть надо дать 7000 копеек = 70 рублей за 1 доллар.
+     */
+    private long multiplication;
+    /**
+     * Название валюты клиента.
+     */
     private String type;
 
-    public Currency(double multiplicator, String type) {
-        this.multiplicator = multiplicator;
-        this.type=type;
+    /**
+     *
+     * @param multiplication Коэффициент от основной валюты.
+     * Отвечает на вопрос, сколько нужно дать 0,000001 единиц валюты (0,0001 десятичных едениц валюты),
+     * чтобы получить 1 единицу основной валюты. Например, для рубля это 1000000*70 = 70000000.
+     * То есть надо дать 7000 копеек = 70 рублей за 1 доллар.
+     * @param type Название валюты.
+     */
+    public Currency(long multiplication, String type) {
+        this.multiplication = multiplication;
+        this.type = type;
     }
 
-    public String getType() {
+    String getType() {
         return type;
     }
 
-    public double getMultiplicator() {
-        return multiplicator;
+    /**
+     * @deprecated {@link #howCostCurrencyByOneBase()}
+     */
+    double getMultiplication() {
+        return multiplication;
+    }
+
+    /**
+     * Сколько я могу купить 0,000001 валюты за 1 основной валюты?
+     * Получает стоимость основной валюты в 0,000001 единицах текущей валюты.
+     * Если возвращается 0, то валюта не продаётся.
+     * @return Коэффициент от основной валюты.
+     * Отвечает на вопрос, сколько нужно дать 0,000001 единиц валюты (0,0001 десятичных едениц валюты),
+     * чтобы получить 1 единицу основной валюты. Например, для рубля это 1000000*70 = 70000000.
+     * То есть надо дать 7000 копеек = 70 рублей за 1 доллар.
+     */
+    long howCostCurrencyByOneBase() {
+        return multiplication;
+    }
+
+    /**
+     * Сколько я могу купить 0,000001 основной валюты за 1 текующую валюту?
+     * Если возвращается 0, то валюта не продаётся.<br/>
+     * <code>
+     * Рубли => доллары     <br/>
+     * 70_000000 =>         <br/>
+     * 00_014285            <br/>
+     * </code>
+     * @return Коэффициент от текущей валюты.
+     */
+    long howCostBaseByOneCurrency() {
+        if(multiplication != 0) {
+            return 1000000/multiplication;
+        }
+        else
+            return 0;
     }
 }
