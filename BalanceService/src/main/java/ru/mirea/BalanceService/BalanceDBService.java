@@ -2,12 +2,20 @@ package ru.mirea.BalanceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+
+import java.sql.ResultSet;
 
 @Component
 public class BalanceDBService {
 
     private JdbcTemplate jdbcTemplate;
+
+    private RowMapper<User> userRowMapper = (ResultSet rs, int row) -> new User(
+            rs.getLong("user_id"),
+            new Money(rs.getLong("penny"), rs.getString("currency_name"))
+    );
 
     @Autowired
     BalanceDBService(JdbcTemplate jdbcTemplate){
@@ -16,8 +24,11 @@ public class BalanceDBService {
 
     void init(){
         // init db инициализация базы данных
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS Balance(user_id int PRIMARY KEY ,balance DOUBLE , currency_name VARCHAR )");
-        jdbcTemplate.execute("INSERT INTO Balance (user_id, balance, currency_name) VALUES (1, 0, 'Rubles'),(2, 0, 'Rubles'),(3, 0, 'Euro')");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS BalanceService(" +
+                "user_id BIGINT NOT NULL," +
+                "currency_name CHAR(32) NOT NULL," +
+                "penny BIGINT NOT NULL, " +
+                "PRIMARY KEY(user_id, currency_name))");
 
     }
 }

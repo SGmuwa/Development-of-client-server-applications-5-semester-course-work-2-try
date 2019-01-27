@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.util.Collection;
-import java.util.Optional;
 
 @Component
 public class BalanceDbConnection {
@@ -27,9 +26,9 @@ public class BalanceDbConnection {
     public Collection<Money> getBalance(Integer user_id) {
         double tmp;
         CurrencyService cs = new CurrencyService();
-        Balance tempBal = jdbcTemplate.queryForObject("SELECT * FROM Balance WHERE user_id = ?",
+        User tempBal = jdbcTemplate.queryForObject("SELECT * FROM Balance WHERE user_id = ?",
                 (ResultSet rs, int rowNum) ->
-                        new Balance(rs.getInt("user_id"), rs.getLong("balance"), rs.getString("currency_name")),
+                        new User(rs.getInt("user_id"), rs.getLong("balance"), rs.getString("currency_name")),
                 user_id
         );
         tmp = cs.getCurrency(tempBal.getBalance(), tempBal.getCurrency_name());
@@ -41,7 +40,7 @@ public class BalanceDbConnection {
     //Увелечение баланса//связь с Валютой
     public String updateBalance(int user_id, double bal){
         try {
-            Balance tempBal = getBalance(user_id);
+            User tempBal = getBalance(user_id);
             CurrencyService cs = new CurrencyService();
             double tempBasisVal = cs.changeValue_toUSD(bal,tempBal.getCurrency_name());
             System.out.println(tempBasisVal+"  tempBasisVal");
