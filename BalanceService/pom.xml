@@ -68,6 +68,12 @@
             <artifactId>spring-cloud-config-client</artifactId>
             <version>${versions.spring.cloud-configure-client.spring-cloud-config-client}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <properties>
