@@ -12,9 +12,9 @@ public class Money {
      * Создание нового состояние одновалютного кошелька.
      * @param countPenny Количество <a href=https://ru.wikipedia.org/wiki/%D0%A1%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D1%83%D1%8E%D1%89%D0%B8%D0%B5_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B4%D0%B5%D0%BD%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5_%D0%B5%D0%B4%D0%B8%D0%BD%D0%B8%D1%86%D1%8B>
      *                   разменных денежных единиц</a> в кошельке.
-     * @param currency Валюта денежных единиц кошелька..
+     * @param currency Валюта денежных единиц кошелька.
      */
-    public Money(long countPenny, String currency) {
+    Money(long countPenny, String currency) {
         if(currency == null)
             throw new NullPointerException("currency");
         this.countPenny = countPenny;
@@ -34,26 +34,6 @@ public class Money {
     private final String currency;
 
     /**
-     * Получение текущего кошелька в эквиваленте кошелька с требуемой валютой.
-     * @param target Требуемая валюта.
-     * @return Новый кошелёк с заданной валютой.
-     * @throws ArithmeticException Конвертация не поддерживается (long overflow). Возможно, сумма слишком большая.
-     * @throws NullPointerException Поле {@code target} пустое.
-     */
-    Money convert(CurrencyConvert target) {
-        if (target == null)
-            throw new NullPointerException(this.toString());
-        return new Money(
-                Math.multiplyExact(
-                        Math.multiplyExact(
-                                countPenny, currency.howCostCurrencyByOneBase()
-                        ) /* Получили в единицах основной валюты */,
-                        target.howCostBaseByOneCurrency()) /* Получили в единицах новой валюты */,
-                target
-        );
-    }
-
-    /**
      * @seenizer countPenny
      */
     long getCountPenny() {
@@ -67,37 +47,24 @@ public class Money {
         return currency;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        Money money = (Money) o;
-
-        if (countPenny != money.countPenny) return false;
-        return currency.equals(money.currency);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (countPenny ^ (countPenny >>> 32));
-        result = 31 * result + currency.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Money{" +
-                "countPenny=" + countPenny +
-                ", currency=" + currency +
-                '}';
-    }
-
-    Money plus(long value) {
+    /**
+     * Вычисление, сколько будет денег, если прибавить к текущим ещё денег.
+     * @param value Сколько нужно добавить минимальных единиц денег к текущим?
+     * @return Новый экземпляр состояния денег.
+     * @throws ArithmeticException Превышена точность long.
+     */
+    Money plus(long value) throws ArithmeticException {
         return new Money(Math.addExact(countPenny, value), currency);
     }
 
-    Money minus(long value) {
+    /**
+     * Вычисление, сколько будет денег, если отнять от текущих ещё денег.
+     * @param value Сколько нужно отнять минимальных единиц денег к текущим?
+     * @return Новый экземпляр состояния денег.
+     * @throws ArithmeticException Превышена точность long.
+     */
+    Money minus(long value) throws ArithmeticException {
         return new Money(Math.subtractExact(countPenny, value), currency);
     }
 
@@ -124,5 +91,31 @@ public class Money {
             out.add(new Money(pennyForEvery, currency));
         }
         return out;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Money money = (Money) o;
+
+        if (countPenny != money.countPenny) return false;
+        return currency.equals(money.currency);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (countPenny ^ (countPenny >>> 32));
+        result = 31 * result + currency.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Money{" +
+                "countPenny=" + countPenny +
+                ", currency=" + currency +
+                '}';
     }
 }

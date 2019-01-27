@@ -47,10 +47,20 @@ class CurrencyConvert {
     }
 
     /**
+     * Сколко 0,000001 валют {@link #from} надо для покупки валюты {@link #to}?
+     * Если быть точнее, то сколько 0,0001 копеешных валют {@link #getFrom} надо для покупки валюты {@link #getTo}?
+     */
+    public long getCostPennyPennyPenny() {
+        return costPennyPennyPenny;
+    }
+
+    /**
      * Отвечает на вопрос, можно ли конвектировать валюту.
      * @return {@code True} - можно. Иначе - {@code false}.
      */
-    boolean isReady() {
+    boolean prop_isReady() { // isReady является именно свойством (property), а не полем (C#), поэтому
+        // надо разлечить для внешней системы, чтобы она не пыталась в конструктор
+        // пихать ready.
         return costPennyPennyPenny > 0;
     }
 
@@ -60,8 +70,9 @@ class CurrencyConvert {
      * возвращает вам цену в старой валюте.
      * @param needNew Сколько покупатель хочет купить новой валюты.
      * @return Новая валюта в неделимых единицах (центах или копейках и так далее).
+     * @throws ArithmeticException Нехватка точности long.
      */
-    long convert(long needNew) {
+    long convert(long needNew) throws ArithmeticException {
         /*
         example.
         from = rub
@@ -75,13 +86,24 @@ class CurrencyConvert {
     }
 
     /**
-     * Конвектирует новые деньги в старую валюту.
-     * Вы называете, сколько нужно старой валюты
-     * @param needOld
-     * @return
+     * Функция рачитывает, сколько можно купить новой валюты за старые деньги.
+     * @param howMuchIHaveOldMoney Количество старых денег.
+     * @return Сколько вам могут дать за это новой валюты.
+     * Результат в неделимых единицах (копейки, центы, и так далее).
+     * @throws ArithmeticException Нехватка точности long.
      */
-    long convertUndo(long needOld) {
-
+    long convertUndo(long howMuchIHaveOldMoney) throws ArithmeticException {
+        /*
+        example.
+        from = rub
+        to = dollar
+        mul = 70 000000
+        have 70 00 кпеек?
+        70 00 * 10000 = 70 000000
+        70 000000 / mul = 1 $
+        1 * 100 = 1 00 cent.
+         */
+        return Math.multiplyExact(howMuchIHaveOldMoney, 1000000) / costPennyPennyPenny;
     }
 }
 

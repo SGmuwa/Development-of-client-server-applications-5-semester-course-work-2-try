@@ -52,7 +52,7 @@ public class CurrencyService {
      */
     Money howMuchYouGetNewCurrencyFromOldCurrency(Money from, String target) throws Exception {
         CurrencyConvert convert = getCurrency(from.getCurrency(), target);
-        return new Money(convert.convert(target.getCountPenny()), from);
+        return new Money(convert.convertUndo(from.getCountPenny()), target);
     }
 
     /**
@@ -66,6 +66,13 @@ public class CurrencyService {
     Money howMuchYouNeedOldCurrencyForBuyCurrentNewCurrency(String from, Money target) throws Exception {
         CurrencyConvert convert = getCurrency(from, target.getCurrency());
         return new Money(convert.convert(target.getCountPenny()), from);
+    }
+
+    /**
+     * Получение всех возможных переводов.
+     */
+    List<CurrencyConvert> getAll() {
+        return jdbcTemplate.query("SELECT costPennyPennyPenny FROM currencyService", currencyConvertMapper);
     }
 
     /**
@@ -87,17 +94,9 @@ public class CurrencyService {
             throw new Exception("you can't buy currency: from " + from + " target " + target); // Нельзя продавать валюту когда нет цены или
         }
         CurrencyConvert convert = list.get(0);
-        if(convert.isReady())
+        if(convert.prop_isReady())
             return convert;
         else
             throw new Exception("you can't buy currency: from " + from + " target " + target);
     }
-
-    double changeValue_toUSD(double cur, String name){
-        for(CurrencyConvert it : currencies)
-            if (it.getFrom().equals(name))
-                return (cur / it.getMultiplication());
-        return -1;
-    }
-
 }
