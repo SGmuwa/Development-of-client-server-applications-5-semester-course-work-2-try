@@ -32,6 +32,10 @@ public class User {
      */
     User(long user_id, List<Money> balance) {
         this.user_id = user_id;
+        if(balance == null)
+            balance = Collections.emptyList();
+        if(balance.contains(null))
+            throw new NullPointerException("Balance element can't be null!");
         this.balance = balance;
     }
 

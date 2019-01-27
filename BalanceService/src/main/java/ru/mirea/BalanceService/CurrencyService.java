@@ -18,9 +18,9 @@ public class CurrencyService {
 
     private Log log = LogFactory.getLog(CurrencyService.class);
 
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    RowMapper<CurrencyConvert> currencyConvertMapper = (ResultSet rs, int rowNum) ->
+    private RowMapper<CurrencyConvert> currencyConvertMapper = (ResultSet rs, int rowNum) ->
             new CurrencyConvert(
                     rs.getString("currencyNameFrom"),
                     rs.getString("currencyNameTo"),
