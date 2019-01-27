@@ -23,7 +23,7 @@
         <module>Tokens</module>
         <module>defaultFilter</module>
         <module>ConfigurationService</module>
-        <module>TestClientConfiguration</module>
+        <module>ConfigurationClient</module>
     </modules>
 
     <build>
