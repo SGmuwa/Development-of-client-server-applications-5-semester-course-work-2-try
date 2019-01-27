@@ -13,7 +13,6 @@ import java.util.Collection;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Controller
 public class BalanceController {
@@ -66,7 +65,7 @@ public class BalanceController {
      */
     @RequestMapping (value = "user/buy_currency/{currencyFrom}/{currencyTo}/{count}", method = GET)
     @ResponseBody
-    public ResponseEntity<Boolean> changeCurrency(
+    public ResponseEntity<Boolean> buyCurrency(
             @RequestHeader("token") String token,
             @PathVariable String currencyFrom,
             @PathVariable String currencyTo,
@@ -74,20 +73,36 @@ public class BalanceController {
     ) {
         log.info("User buy currency: " + currencyFrom + currencyTo + count);
         int user_id = TokenFactory.decoderToken(token).getId();
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(bs.buyCurrency(user_id, currencyFrom, new Money(count, currencyTo)));
+        return bs.buyCurrency(user_id, currencyFrom, new Money(count, currencyTo)) ?
+                ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
     }
 
     /**
      * Изменение баланса
-     * @param id Пользователь, у которого надо обновить баланс.
-     * @param balance
-     * @return
+     * @param user Пользователь, у которого надо обновить баланс.
+     * @return ok
      */
-    @RequestMapping (value = "admin/set/balance", method = POST)
+    @RequestMapping (value = "admin/user", method = POST)
     @ResponseBody
-    public String updateBalance(@RequestBody User balance){return bs.updateBalance2(id,balance);}
+    public ResponseEntity updateBalance(@RequestBody User user) {
+        log.info("admin/user");
+        bs.updateOrAddUser(user);
+        return ResponseEntity.ok().build();
+    }
 
+    /**
+     * Проверка баланса.
+     * @param user_id Пользователь, у которого надо проверить баланс.
+     * @return ok
+     */
+    @RequestMapping (value = "admin/user/{user_id}", method = GET)
+    @ResponseBody
+    public ResponseEntity<Collection<Money>> updateBalance(@PathVariable long user_id) {
+        log.info("admin/user");
+        User user = bs.getUserInfo(user_id);
+        if(user == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(user.getBalance());
+    }
 }

@@ -41,16 +41,11 @@ public class BalanceService {
     BalanceService(JdbcTemplate jdbcTemplate, CurrencyService currencyService) {
         this.jdbcTemplate = jdbcTemplate;
         this.currencyService = currencyService;
-    }
-
-    void init() {
-        // init db инициализация базы данных
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS BalanceService(" +
                 "user_id BIGINT NOT NULL," +
                 "currency_name CHAR(32) NOT NULL," +
                 "penny BIGINT NOT NULL, " +
                 "PRIMARY KEY(user_id, currency_name))");
-
     }
 
     /**
