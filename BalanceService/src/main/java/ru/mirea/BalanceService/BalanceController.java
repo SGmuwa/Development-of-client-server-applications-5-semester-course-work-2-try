@@ -3,7 +3,6 @@ package ru.mirea.BalanceService;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -96,10 +95,10 @@ public class BalanceController {
      * @param user_id Пользователь, у которого надо проверить баланс.
      * @return ok
      */
-    @RequestMapping (value = "admin/user/{user_id}", method = GET)
+    @RequestMapping (value = "admin/{user_id}", method = GET)
     @ResponseBody
-    public ResponseEntity<Collection<Money>> updateBalance(@PathVariable long user_id) {
-        log.info("admin/user");
+    public ResponseEntity<Collection<Money>> getBalance(@PathVariable long user_id) {
+        log.info("admin/" + user_id);
         User user = bs.getUserInfo(user_id);
         if(user == null)
             return ResponseEntity.badRequest().build();

@@ -75,7 +75,9 @@ public class BalanceService {
      * @param user Новая информация о пользователе
      */
     public void updateOrAddUser(User user) {
-        Object[] args = new Object[user.size()]; // Необходимо, чтобы jdbc экранировал.
+        
+
+        Object[] args = new Object[user.size()*3]; // Необходимо, чтобы jdbc экранировал.
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO BalanceService VALUES "
         );
@@ -89,7 +91,8 @@ public class BalanceService {
             sb.append(String.format("(?%d, ?%d, ?%d)", numberOfParam++, numberOfParam++, numberOfParam++));
         }
         // Запрос полностью готов.
-        jdbcTemplate.query("DELETE FROM BalanceService WHERE user_id = ?1", ResultSet::close, (Long)user.getUser_id());
+        jdbcTemplate.execute("DELETE FROM BalanceService WHERE user_id = " + user.getUser_id());
+        jdbcTemplate.execute(sb.toString());
         jdbcTemplate.query(sb.toString(), ResultSet::close, args);
     }
 
