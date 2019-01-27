@@ -5,17 +5,14 @@ import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 @Component
-public class BalanceDBService {
+public class BalanceService {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -39,7 +36,7 @@ public class BalanceDBService {
     };
 
     @Autowired
-    BalanceDBService(JdbcTemplate jdbcTemplate) {
+    BalanceService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -75,16 +72,26 @@ public class BalanceDBService {
                 buffer.iterator().next();
     }
 
-    public String updateBalance(int user_id, double bal) {
-        return balanceConnect.updateBalance(user_id, bal);
-    }
-
-    public String changeCurrency(int user_id, String change_currency) {
-        return balanceConnect.changeCurrency(user_id, change_currency);
-    }
-
-    //запретить обращаться пользователям
-    public String updateBalance2(int id, double balance) {
-        return balanceConnect.updateBalance2(id, balance);
+    /**
+     * Удаляет все предыдущие кошельки пользователя и устанавливает новые.
+     * @param user Новая информация о пользователе
+     */
+    public void updateOrAddUser(User user) {
+        Object[] args = new Object[user.size()]; // Необходимо, чтобы jdbc экранировал.
+        StringBuilder sb = new StringBuilder(
+                "INSERT INTO BalanceService VALUES "
+        );
+        int numberOfParam = 1;
+        for(Money m : user) {
+            if(numberOfParam != 1)
+                sb.append(",");
+            args[numberOfParam-1] = user.getUser_id();
+            args[numberOfParam] = m.getCurrency();
+            args[numberOfParam+1] = m.getCountPenny();
+            sb.append(String.format("(?%d, ?%d, ?%d)", numberOfParam++, numberOfParam++, numberOfParam++));
+        }
+        // Запрос полностью готов.
+        jdbcTemplate.query("DELETE FROM BalanceService WHERE user_id = ?1", ResultSet::close, (Long)user.getUser_id());
+        jdbcTemplate.query(sb.toString(), (ResultSet::close), args);
     }
 }

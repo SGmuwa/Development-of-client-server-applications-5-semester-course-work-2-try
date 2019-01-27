@@ -1,10 +1,9 @@
 package ru.mirea.BalanceService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
-public class User {
+public class User implements Iterable<Money> {
     private final long user_id;
     private final List<Money> balance; //количество денег в базовой валюте
 
@@ -76,5 +75,39 @@ public class User {
             }
             return currencies;
         }
+    }
+
+    /**
+     * Возвращает количество валют у пользователя.
+     */
+    public int size() {
+        return balance.size();
+    }
+
+    @Override
+    public Iterator<Money> iterator() {
+        return new Iterator<>() { // Гарантируем, что лист будет только для чтения.
+            Iterator<Money> it = balance.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Money next() {
+                return it.next();
+            }
+        };
+    }
+
+    @Override
+    public void forEach(Consumer<? super Money> action) {
+        this.balance.forEach(action);
+    }
+
+    @Override
+    public Spliterator<Money> spliterator() {
+        return this.balance.spliterator();
     }
 }

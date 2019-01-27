@@ -9,6 +9,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class Application {
     public static void main(String[] arg){
         ConfigurableApplicationContext context = SpringApplication.run(Application.class);//Создали приложение
-        context.getBean(BalanceDBService.class).init();
+        context.getBean(BalanceService.class).init();
     }
 }
