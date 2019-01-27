@@ -1,36 +1,31 @@
 package ru.mirea.BalanceService;
 
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.Tokens.TokenFactory;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import java.util.Collection;
-import java.util.Enumeration;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Controller
 public class BalanceController {
 
-    @Autowired
-    private BalanceDbConnection balDbCon;
+    private final BalanceService bs;
 
-    /**
-     * Пополнение баланса пользователя.
-     * @param token Токен пользователя, к которому надо присвоить баланс.
-     * @param curName Какая валюта у пользователя?
-     * @param plus Какой баланс ему необходимо присвоить.
-     * @return ok, если операция прошла успешно. Иначе - not found.
-     */
-    @RequestMapping(value = "user/balance/{curName}/{plus}", method = RequestMethod.PUT)
-    @ResponseBody
-    public ResponseEntity putBalance(@RequestHeader("token") String token, @PathVariable String curName, @PathVariable long plus) {
-        int user_id = TokenFactory.decoderToken(token).getId();
-        balDbCon.updateBalance(user_id, curName, plus);
-        return ResponseEntity.ok().build();
+    private final Log log = LogFactory.getLog(getClass());
+
+    @Autowired
+    public BalanceController(BalanceService bs) {
+        log.info("init. BalanceController.");
+        this.bs = bs;
     }
 
     /**
@@ -38,32 +33,61 @@ public class BalanceController {
      * @param token Токен, в котором хранится идентификатор пользователя.
      * @return Здесь расписаны все кошельки пользователя.
      */
-    @RequestMapping (value = "user/balance", method = RequestMethod.GET)
+    @RequestMapping (value = "user", method = GET)
     @ResponseBody
     public ResponseEntity<Collection<Money>> getBalance(@RequestHeader("token") String token) {
+        log.info("get user about");
         int user_id = TokenFactory.decoderToken(token).getId();
-        return ResponseEntity.ok(balDbCon.getBalance(user_id));
+        User user = bs.getUserInfo(user_id);
+        if(user == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(user.getBalance());
+    }
+
+    /**
+     * Узнаём все кошельки всех пользователей.
+     * @return Здесь расписаны все кошельки пользователя.
+     */
+    @RequestMapping (value = "admin", method = GET)
+    @ResponseBody
+    public ResponseEntity<Collection<User>> getBalance() {
+        log.info("get users about");
+        return ResponseEntity.ok(bs.getUserInfo());
     }
 
     /**
      * Пользователь хочет купить валюту.
-     * @param user_id
-     * @param change_currency
-     * @return
+     * @param token Токен пользователя, который хочет купить валюту.
+     * @param currencyFrom Валюта, которую он готов потратить.
+     * @param currencyTo Валюта, которую пользователь хочет купить.
+     * @param count Количество минимальных единиц* валюты, которую пользователь хочет купить.
+     *              * - копейки, центы и другие.
+     * @return True, если транзакция выполнена. Иначе - False.
      */
-    @RequestMapping (value = "user/balance/change_currency/{user_id}/{change_currency}", method = RequestMethod.PUT)
+    @RequestMapping (value = "user/buy_currency/{currencyFrom}/{currencyTo}/{count}", method = GET)
     @ResponseBody
-    public String changeCurrency(@PathVariable int user_id,@PathVariable String change_currency) {
-        return balDbCon.changeCurrency(user_id, change_currency);
+    public ResponseEntity<Boolean> changeCurrency(
+            @RequestHeader("token") String token,
+            @PathVariable String currencyFrom,
+            @PathVariable String currencyTo,
+            @PathVariable long count
+    ) {
+        log.info("User buy currency: " + currencyFrom + currencyTo + count);
+        int user_id = TokenFactory.decoderToken(token).getId();
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(bs.buyCurrency(user_id, currencyFrom, new Money(count, currencyTo)));
     }
 
-    @RequestMapping (value = "user/currency/{user_id}", method = RequestMethod.GET)
+    /**
+     * Изменение баланса
+     * @param id Пользователь, у которого надо обновить баланс.
+     * @param balance
+     * @return
+     */
+    @RequestMapping (value = "admin/set/balance", method = POST)
     @ResponseBody
-    public String getCurrency(@PathVariable int user_id){return balDbCon.getCurrency(user_id);}
-
-    //Вычитание баланса
-    @RequestMapping (value = "admin/update/balance/{id}/{balance}", method = RequestMethod.POST)
-    @ResponseBody
-    public String updateBalance2(@PathVariable int id,@PathVariable double balance){return balDbCon.updateBalance2(id,balance);}
+    public String updateBalance(@RequestBody User balance){return bs.updateBalance2(id,balance);}
 
 }

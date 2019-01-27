@@ -56,7 +56,7 @@ public class BalanceService {
     /**
      * Получение всех кошельков всех пользователей.
      */
-    public Collection<User> getBalances() {
+    Collection<User> getUserInfo() {
         return jdbcTemplate.query("SELECT * FROM BalanceService", userRowMapper);
     }
 
@@ -65,7 +65,7 @@ public class BalanceService {
      * @param user_id Идентификатор интересующего нас пользователя.
      * @return Пользовательские кошельки.
      */
-    public User getUserInfo(long user_id) {
+    User getUserInfo(long user_id) {
         Collection<User> buffer = jdbcTemplate.query("SELECT * FROM BalanceService WHERE user_id = ?1", userRowMapper, user_id);
         if (buffer.size() == 0) // Гаранитруется, что buffer != null этим кодом: userRowMapper.
             return null;

@@ -16,6 +16,8 @@ public class JetProjectProperties {
 
     @Autowired
     public JetProjectProperties(@Value("${configuration.jet}") String jet) {
+        log.info("Construct.");
+        log.info("Конструктор.");
         this.jet = jet;
     }
 
