@@ -2,13 +2,14 @@ package ru.mirea.BalanceService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.context.ConfigurableApplicationContext;
 
 @ServletComponentScan
 @SpringBootApplication
-public class Application {
+@EnableConfigurationProperties
+public class BalanceApplication {
     public static void main(String[] arg){
-        SpringApplication.run(Application.class);
+        SpringApplication.run(BalanceApplication.class);
     }
 }
