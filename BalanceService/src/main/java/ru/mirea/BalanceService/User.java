@@ -13,7 +13,7 @@ public class User implements Iterable<Money> {
      * @param balance Количество денег в заданной валюте.
      */
     User(long user_id, Money balance) {
-        this(user_id, Collections.singletonList(balance));
+        this(user_id, new ArrayList<>(Collections.singleton(balance)));
     }
 
     /**
@@ -21,7 +21,7 @@ public class User implements Iterable<Money> {
      * @param user_id Идентификатор пользователя.
      */
     User(long user_id) {
-        this(user_id, Collections.emptyList());
+        this(user_id, new ArrayList<>());
     }
 
     /**
@@ -38,7 +38,7 @@ public class User implements Iterable<Money> {
         this.balance = balance;
     }
 
-    long getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 
@@ -83,6 +83,10 @@ public class User implements Iterable<Money> {
      */
     public int size() {
         return balance.size();
+    }
+
+    public Iterator<Money> getIterator() {
+        return iterator();
     }
 
     @Override

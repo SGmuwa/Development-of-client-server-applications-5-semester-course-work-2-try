@@ -36,14 +36,14 @@ public class Money implements Comparable<Money> {
     /**
      * @seenizer countPenny
      */
-    long getCountPenny() {
+    public long getCountPenny() {
         return countPenny;
     }
 
     /**
      * @seenizer currency
      */
-    String getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 

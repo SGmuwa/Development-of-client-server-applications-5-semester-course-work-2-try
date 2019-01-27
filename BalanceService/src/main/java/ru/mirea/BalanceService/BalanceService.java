@@ -5,6 +5,7 @@ import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
@@ -75,8 +76,6 @@ public class BalanceService {
      * @param user Новая информация о пользователе
      */
     public void updateOrAddUser(User user) {
-        
-
         Object[] args = new Object[user.size()*3]; // Необходимо, чтобы jdbc экранировал.
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO BalanceService VALUES "
@@ -91,9 +90,8 @@ public class BalanceService {
             sb.append(String.format("(?%d, ?%d, ?%d)", numberOfParam++, numberOfParam++, numberOfParam++));
         }
         // Запрос полностью готов.
-        jdbcTemplate.execute("DELETE FROM BalanceService WHERE user_id = " + user.getUser_id());
-        jdbcTemplate.execute(sb.toString());
-        jdbcTemplate.query(sb.toString(), ResultSet::close, args);
+        jdbcTemplate.update("DELETE FROM BalanceService WHERE user_id = " + user.getUser_id());
+        jdbcTemplate.update(sb.toString(), args);
     }
 
     public boolean buyCurrency(long user_id, String fromName, Money target) {
