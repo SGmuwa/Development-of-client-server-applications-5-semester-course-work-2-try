@@ -76,6 +76,23 @@ public class CurrencyService {
     }
 
     /**
+     * Добавление в таблицу нового конвектора
+     * @param add Конвектор, который надо обновить или добавить.
+     */
+    void addConvert(CurrencyConvert add) {
+        jdbcTemplate.query(
+                "IF EXISTS(SELECT * FROM currencyService WHERE currencyNameFrom = ?1 AND currencyNameTo = ?2) " +
+                        "UPDATE test SET costPennyPennyPenny=?3 WHERE currencyNameFrom = ?1 AND currencyNameTo = ?2 " +
+                        "ELSE " +
+                        "INSERT INTO currencyService VALUES(?1, ?2, ?3)",
+                (ResultSet rs, int i) -> null,
+                add.getFrom(),
+                add.getTo(),
+                add.getCostPennyPennyPenny()
+        );
+    }
+
+    /**
      * Получает конвектор валют.
      * @param from Название валюты, кторая у нас есть.
      * @param target Название валюты, которую хотим купить.
