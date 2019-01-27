@@ -18,6 +18,8 @@ public class BalanceService {
 
     private Log log = LogFactory.getLog(getClass());
 
+    private CurrencyService currencyService;
+
     /**
      * Маппер для всей таблицы целеком.
      * Вернётся not-null коллекция.
@@ -28,7 +30,7 @@ public class BalanceService {
             Long user_id = rs.getLong("user_id");
             Money money = new Money(rs.getLong("penny"), rs.getString("currency_name"));
             if (balances.keySet().contains(user_id)) // add money
-                balances.get(user_id).updateBalance(money);
+                balances.get(user_id).updateOrAddBalance(money);
             else
                 balances.put(user_id, new User(user_id, money));
         }
@@ -36,8 +38,9 @@ public class BalanceService {
     };
 
     @Autowired
-    BalanceService(JdbcTemplate jdbcTemplate) {
+    BalanceService(JdbcTemplate jdbcTemplate, CurrencyService currencyService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.currencyService = currencyService;
     }
 
     void init() {
@@ -92,6 +95,22 @@ public class BalanceService {
         }
         // Запрос полностью готов.
         jdbcTemplate.query("DELETE FROM BalanceService WHERE user_id = ?1", ResultSet::close, (Long)user.getUser_id());
-        jdbcTemplate.query(sb.toString(), (ResultSet::close), args);
+        jdbcTemplate.query(sb.toString(), ResultSet::close, args);
+    }
+
+    public boolean buyCurrency(long user_id, String fromName, Money target) {
+        try {
+            User user = this.getUserInfo(user_id);
+            Money from = user.getBalance(fromName);
+            Money need = currencyService.howMuchYouNeedOldCurrencyForBuyCurrentNewCurrency(fromName, target);
+            if (from.compareTo(need) < 0)
+                return false; // Недостаточно средств. Можно позже будет убрать это, если будет система кредитования.
+            user.updateOrAddBalance(from.minus(need)); // Отнимаем у пользователя деньги
+            updateOrAddUser(user); // Отправляем в БД обновление
+            return true;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return false;
+        }
     }
 }

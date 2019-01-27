@@ -44,10 +44,11 @@ public class User implements Iterable<Money> {
 
     /**
      * Изменяет баланс пользователя заданной валюты.
+     * Если заданной валюты у пользователя нет, то добавляется новая.
      * У пользователя может быть только один кошелёк в заданной валюте.
      * @param balance Новый баланс пользователя.
      */
-    void updateBalance(Money balance) {
+    void updateOrAddBalance(Money balance) {
         synchronized (balance) {
             this.balance.removeIf(m -> m.getCurrency().equals(balance.getCurrency()));
             this.balance.add(balance);
@@ -109,5 +110,17 @@ public class User implements Iterable<Money> {
     @Override
     public Spliterator<Money> spliterator() {
         return this.balance.spliterator();
+    }
+
+    /**
+     * Ищет баланс пользователя по определённой валюте.
+     * @param nameCurrency Название необходимой валюты.
+     * @return Возвращает количество денег по данной валюте.
+     */
+    Money getBalance(String nameCurrency) {
+        for (Money m : this)
+            if (m.getCurrency().equals(nameCurrency))
+                return m;
+        return new Money(0, nameCurrency);
     }
 }
