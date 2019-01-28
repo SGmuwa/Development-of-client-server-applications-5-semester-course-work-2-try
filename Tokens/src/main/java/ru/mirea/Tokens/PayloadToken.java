@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class PayloadToken {
-    private int id;
+    private long id;
     private String login;
     private List<Role> role;
 
@@ -20,7 +19,7 @@ public class PayloadToken {
         role = Collections.emptyList();
     }
 
-    public PayloadToken(int id, String login, List<Role> role) {
+    public PayloadToken(long id, String login, List<Role> role) {
         this.id = id;
         this.login = login;
         if(role != null)
@@ -29,13 +28,13 @@ public class PayloadToken {
             this.role = Collections.emptyList();
     }
 
-    public PayloadToken(int id, String login, Role role) {
+    public PayloadToken(long id, String login, Role role) {
         this.id = id;
         this.login = login;
         this.role = Collections.singletonList(role);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

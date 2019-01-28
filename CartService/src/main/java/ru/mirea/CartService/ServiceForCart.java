@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.mirea.Tokens.TokenFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -29,11 +30,12 @@ public class ServiceForCart {
 
     @PostConstruct
     public void init()throws JsonProcessingException{
+
         String signature = DigestUtils.sha256Hex("-1"+"loginAdmin" + "admin" +secret_key);
         Token token = new Token(-1, "loginAdmin","admin", signature);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        this.tokenStr = objectMapper.writer().writeValueAsString(token);
+        this.tokenStr = TokenFactory.generateToken();objectMapper.writer().writeValueAsString(token);
 /*
         HttpHeaders headers = new HttpHeaders();
         headers.set("Token" , tokenStr);

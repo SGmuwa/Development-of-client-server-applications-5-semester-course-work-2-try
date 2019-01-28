@@ -1,5 +1,10 @@
 package ru.mirea.Tokens;
 
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,12 +13,21 @@ import java.util.Base64;
 /**
  * Класс представляет из себя описание, что такое токен.
  */
+@Component
+@ConfigurationProperties("tokens.configuration")
 public class TokenFactory {
-    public final static HeaderToken headerDefault = new HeaderToken("PupishevaSidorenko", "SHA-512");
+    private final static HeaderToken headerDefault = new HeaderToken("PupishevaSidorenko", "SHA-512");
     /**
      * Секретный ключ.
      */
-    public final static String secretKey = "4QdR!t*NBEXDzWf_M=G%f$eA4ku?ZTdVDNarxH7z4Q=mvg8ZXL";
+    private static String secretKey = "sample sol - woijiweogiwgwjigewjjeofjwwwwwww12392141485fwe";
+
+    private static Log log = LogFactory.getLog(TokenFactory.class);
+
+    public static void setSecretKey(String secretKey) {
+        log.info("Secret token change!");
+        TokenFactory.secretKey = secretKey;
+    }
 
     /**
      * Генерирует токен на основе его полезной нагрузки.
@@ -24,6 +38,19 @@ public class TokenFactory {
         String header64 = new String(Base64.getEncoder().encode(headerDefault.generateJSON().getBytes()));
         String payload64 = new String(Base64.getEncoder().encode(payload.generateJSON().getBytes()));
         return header64 + "." + payload64 + "." + getSignature(header64, payload64);
+    }
+
+    /**
+     * Генерирует простой токен на основе его полезной нагрузки.
+     * @param id Идентификатор пользователя.
+     * @param login Логин пользователя.
+     * @param role Полномочия пользователя.
+     * @return Токен пользователя.
+     */
+    public static String generateToken(long id, String login, Role role) {
+        return generateToken(new PayloadToken(
+                id, login, role
+        ));
     }
 
     /**
@@ -94,15 +121,15 @@ public class TokenFactory {
             BigInteger no = new BigInteger(1, messageDigest);
 
             // Convert message digest into hex value
-            String hashtext = no.toString(16);
+            StringBuilder hashtext = new StringBuilder(no.toString(16));
 
             // Add preceding 0s to make it 32 bit
             while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
+                hashtext.insert(0, "0");
             }
 
             // return the HashText
-            return hashtext;
+            return hashtext.toString();
         }
 
         // For specifying wrong message digest algorithms
