@@ -1,7 +1,6 @@
 package ru.mirea.CartService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.mirea.Tokens.Role;
 import ru.mirea.Tokens.TokenFactory;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +35,7 @@ public class ServiceForCart {
         Token token = new Token(-1, "loginAdmin","admin", signature);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        this.tokenStr = TokenFactory.generateToken();objectMapper.writer().writeValueAsString(token);
+        this.tokenStr = TokenFactory.generateToken(-1, "CartService", Role.ADMIN);objectMapper.writer().writeValueAsString(token);
 /*
         HttpHeaders headers = new HttpHeaders();
         headers.set("Token" , tokenStr);
