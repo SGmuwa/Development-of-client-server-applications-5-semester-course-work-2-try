@@ -2,6 +2,8 @@ package ru.mirea.CartService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -20,9 +22,13 @@ import java.util.List;
 
 @Service
 public class ServiceForCart {
+
     private CartDbConnection cartConnect;
+
     private String tokenStr;
-    private final String secret_key = "sdkfda";
+
+    private Log log = LogFactory.getLog(getClass());
+
     @Autowired
     public ServiceForCart(CartDbConnection cartConnect/*,RESTtEMPLATE */){
         this.cartConnect = cartConnect;
@@ -30,12 +36,7 @@ public class ServiceForCart {
 
     @PostConstruct
     public void init()throws JsonProcessingException{
-
-        String signature = DigestUtils.sha256Hex("-1"+"loginAdmin" + "admin" +secret_key);
-        Token token = new Token(-1, "loginAdmin","admin", signature);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        this.tokenStr = TokenFactory.generateToken(-1, "CartService", Role.ADMIN);objectMapper.writer().writeValueAsString(token);
+        this.tokenStr = TokenFactory.generateToken(-1, "CartService", Role.ADMIN);
 /*
         HttpHeaders headers = new HttpHeaders();
         headers.set("Token" , tokenStr);
@@ -46,13 +47,13 @@ public class ServiceForCart {
     public String deleteCart(int user_id){return cartConnect.deleteCart(user_id);}
 
     public List<Cart> getCart(int user_id){
-        System.out.println("Сервис1");
+        log.info("Пользователь получает свою корзину.");
         return cartConnect.getCart(user_id);
     }
 
     public String putItem_inCart(String type, int user_id, int id) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Token" , tokenStr);
+        headers.set("token" , tokenStr);
         HttpEntity entity = new HttpEntity(headers);
 
         RestTemplate restTemplate1 = new RestTemplate();
@@ -98,7 +99,7 @@ public class ServiceForCart {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Token" , tokenStr);
+        headers.set("token" , tokenStr);
         HttpEntity entity = new HttpEntity(headers);
 
         List<Cart> userCartList = cartConnect.getCart(user_id);
