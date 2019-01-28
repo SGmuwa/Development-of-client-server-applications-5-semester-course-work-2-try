@@ -35,7 +35,7 @@ public class BalanceController {
     @ResponseBody
     public ResponseEntity<Collection<Money>> getBalance(@RequestHeader("token") String token) {
         log.info("get user about");
-        int user_id = TokenFactory.decoderToken(token).getId();
+        long user_id = TokenFactory.decoderToken(token).getId();
         User user = bs.getUserInfo(user_id);
         if(user == null)
             return ResponseEntity.badRequest().build();
@@ -71,7 +71,7 @@ public class BalanceController {
             @PathVariable long count
     ) {
         log.info("User buy currency: " + currencyFrom + currencyTo + count);
-        int user_id = TokenFactory.decoderToken(token).getId();
+        long user_id = TokenFactory.decoderToken(token).getId();
         return bs.buyCurrency(user_id, currencyFrom, new Money(count, currencyTo)) ?
                 ResponseEntity.ok().build()
                 : ResponseEntity.badRequest().build();
