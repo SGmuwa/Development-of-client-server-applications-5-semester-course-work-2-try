@@ -52,6 +52,7 @@ public class BalanceControllerTest {
 
     @Before
     public void forTest() {
+        bc.clear();
         log.info("Проверка, что в БД нет данных.");
         assertEquals(0, bc.getBalance().getBody().size());
     }

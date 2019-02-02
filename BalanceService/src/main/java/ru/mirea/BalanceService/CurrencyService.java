@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -76,16 +77,24 @@ public class CurrencyService {
     }
 
     /**
+     * Добавление или обновление сразу много курсов валют.
+     * @param list Курсы валют, которые надо обновить или добавить.
+     */
+    void addConvert(Collection<CurrencyConvert> list) {
+        for (CurrencyConvert cc:
+             list) {
+            addConvert(cc);
+        }
+    }
+
+    /**
      * Добавление в таблицу нового конвектора
      * @param add Конвектор, который надо обновить или добавить.
      */
     void addConvert(CurrencyConvert add) {
-        jdbcTemplate.query(
-                "IF EXISTS(SELECT * FROM currencyService WHERE currencyNameFrom = ?1 AND currencyNameTo = ?2) " +
-                        "UPDATE test SET costPennyPennyPenny=?3 WHERE currencyNameFrom = ?1 AND currencyNameTo = ?2 " +
-                        "ELSE " +
-                        "INSERT INTO currencyService VALUES(?1, ?2, ?3)",
-                (ResultSet rs, int i) -> null,
+        jdbcTemplate.update(
+                "DELETE FROM currencyservice WHERE currencyNameFrom = ?1 AND currencyNameTo = ?2;" +
+                        "INSERT currencyservice VALUES (?1, ?2, ?3)",
                 add.getFrom(),
                 add.getTo(),
                 add.getCostPennyPennyPenny()
@@ -115,5 +124,12 @@ public class CurrencyService {
             return convert;
         else
             throw new Exception("you can't buy currency: from " + from + " target " + target);
+    }
+
+    /**
+     * Удаление данных с таблицы.
+     */
+    void clear() {
+
     }
 }

@@ -104,4 +104,15 @@ public class BalanceController {
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(user.getBalance());
     }
+
+    /**
+     * Очистка базы данных от всех записей.
+     * @return ok
+     */
+    @RequestMapping (value = "admin/clear", method = GET)
+    public ResponseEntity clear() {
+        log.info("admin/clear");
+        bs.clear();
+        return ResponseEntity.ok().build();
+    }
 }

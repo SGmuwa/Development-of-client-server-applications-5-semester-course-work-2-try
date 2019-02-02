@@ -11,6 +11,9 @@ import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
+/**
+ * @author <a href="https://www.github.com/SGmuwa">[SG]Muwa</a>
+ */
 @Component
 public class BalanceService {
 
@@ -61,7 +64,7 @@ public class BalanceService {
      * @return Пользовательские кошельки.
      */
     User getUserInfo(long user_id) {
-        Collection<User> buffer = jdbcTemplate.query("SELECT * FROM BalanceService WHERE user_id = ?1", userRowMapper, user_id);
+        Collection<User> buffer = jdbcTemplate.query("SELECT * FROM balanceservice WHERE user_id = ?1", userRowMapper, user_id);
         if (buffer.size() == 0) // Гаранитруется, что buffer != null этим кодом: userRowMapper.
             return null;
         if (buffer.size() > 1)
@@ -74,7 +77,7 @@ public class BalanceService {
      * Удаляет все предыдущие кошельки пользователя и устанавливает новые.
      * @param user Новая информация о пользователе
      */
-    public void updateOrAddUser(User user) {
+    void updateOrAddUser(User user) {
         Object[] args = new Object[user.size()*3]; // Необходимо, чтобы jdbc экранировал.
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO BalanceService VALUES "
@@ -89,11 +92,11 @@ public class BalanceService {
             sb.append(String.format("(?%d, ?%d, ?%d)", numberOfParam++, numberOfParam++, numberOfParam++));
         }
         // Запрос полностью готов.
-        jdbcTemplate.update("DELETE FROM BalanceService WHERE user_id = " + user.getUser_id());
+        jdbcTemplate.update("DELETE FROM balanceservice WHERE user_id = " + user.getUser_id());
         jdbcTemplate.update(sb.toString(), args);
     }
 
-    public boolean buyCurrency(long user_id, String fromName, Money target) {
+    boolean buyCurrency(long user_id, String fromName, Money target) {
         try {
             User user = this.getUserInfo(user_id);
             Money from = user.getBalance(fromName);
@@ -107,5 +110,12 @@ public class BalanceService {
             log.info(e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Очистка всех записей базы данных.
+     */
+    void clear() {
+        jdbcTemplate.execute("DROP TABLE balanceservice");
     }
 }
