@@ -93,7 +93,8 @@ public class BalanceService {
             args[numberOfParam-1] = user.getUser_id();
             args[numberOfParam] = m.getCurrency();
             args[numberOfParam+1] = m.getPenny();
-            sb.append(String.format("(?%d, ?%d, ?%d)", numberOfParam++, numberOfParam++, numberOfParam++));
+            sb.append("(?, ?, ?)");
+            numberOfParam += 3;
         }
         // Запрос полностью готов.
         jdbcTemplate.update("DELETE FROM balanceservice WHERE user_id = " + user.getUser_id());
@@ -101,43 +102,62 @@ public class BalanceService {
     }
 
     /**
+     * Дарим пользователю деньги.
+     * @param user_id Идентификатор требуемого пользователя.
+     * @param money Количество денег, которое надо дать пользователю. Можно дать только положительное количество денег.
+     * @return True, если операция прошла успешно. False, если слишком много денег.
+     */
+    boolean give(long user_id, Money money) {
+        if(money.getPenny() > 0) {
+            int count = jdbcTemplate.update(
+                    "UPDATE balanceservice SET penny=(penny+?3) " +
+                            "WHERE (user_id=?1 AND currency_name = ?2 AND penny+?3<=(?4))",
+                    user_id,
+                    '\'' + money.getCurrency() + '\'',
+                    money.getPenny(),
+                    Long.MAX_VALUE
+            );
+            if(count > 1)
+                log.error("Найден дублирующий первичный ключ! user_id:" + user_id + ", money:" + money);
+            if(count > 0)
+                return true;
+            return jdbcTemplate.update(
+                    "INSERT balanceservice VALUES " +
+                            "(user_id=?1, currency_name=?2, penny=?3)",
+                    user_id,
+                    '\'' + money.getCurrency() + '\'',
+                    money.getPenny()
+            ) > 0;
+        }
+        else
+            return false;
+    }
+
+    /**
      * Снимает деньги с пользователя.
      * Если у пользователя нет денег, то функция не будет выполнена.
      * @param user_id Идентификатор пользователя, у которого сняли деньги.
-     * @param money Деньги, который надо снять с пользователя.
+     * @param money Деньги, который надо снять с пользователя. Можно снимать только положительную сумму не равную нулю!
      * @return True, если деньги были сняты. Существует пользователь и у него
      * достаточно средств. Иначе false.
      */
     boolean pay(long user_id, Money money) {
-        return jdbcTemplate.update(
-                "UPDATE balanceservice SET penny=(penny-?3) " +
-                        "WHERE (user_id=?1 AND currency_name = ?2 AND penny>=(?3))",
-                user_id,
-                money.getCurrency(),
-                money.getPenny()
-        ) > 0;
-    }
-
-    boolean buyCurrency(long user_id, String fromName, Money target) {
-        try {
-            User user = this.getUserInfo(user_id);
-            Money from = user.getBalance(fromName);
-            Money need = currencyService.howMuchYouNeedOldCurrencyForBuyCurrentNewCurrency(fromName, target);
-            if (from.compareTo(need) < 0)
-                return false; // Недостаточно средств. Можно позже будет убрать это, если будет система кредитования.
-            user.updateOrAddBalance(from.minus(need)); // Отнимаем у пользователя деньги
-            updateOrAddUser(user); // Отправляем в БД обновление
-            return true;
-        } catch (Exception e) {
-            log.info(e.getMessage());
+        if (money.getPenny() > 0)
+            return jdbcTemplate.update(
+                    "UPDATE balanceservice SET penny=(penny-?3) " +
+                            "WHERE (user_id=?1 AND currency_name = ?2 AND penny>=(?3))",
+                    user_id,
+                    '\'' + money.getCurrency() + '\'',
+                    money.getPenny()
+            ) > 0;
+        else
             return false;
-        }
     }
 
     /**
      * Очистка всех записей базы данных.
      */
     void clear() {
-        jdbcTemplate.execute("DROP TABLE balanceservice");
+        jdbcTemplate.execute("DELETE FROM balanceservice");
     }
 }

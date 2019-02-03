@@ -6,11 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -28,8 +29,8 @@ public class CurrencyControllerAdmin {
      * Обновление курса валют. Если его не существует, то будет добавлен.
      * @param currencyConvert Новые курсы.
      */
-    @RequestMapping(method = POST)
-    public ResponseEntity update(@RequestBody Collection<CurrencyConvert> currencyConvert) {
+    @RequestMapping(value = "/all", method = POST)
+    public ResponseEntity update(@RequestBody ListCurrencyConvert currencyConvert) {
         cs.addConvert(currencyConvert);
         return ResponseEntity.ok().build();
     }
@@ -44,24 +45,14 @@ public class CurrencyControllerAdmin {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Получает все записи из БД по ценам валют.
-     */
-    @RequestMapping(method = GET)
-    public ResponseEntity<Collection<CurrencyConvert>> show() {
-        return ResponseEntity.ok(
-                cs.getAll()
-        );
-    }
-
     @RequestMapping(value = "/example")
-    public ResponseEntity<Collection<CurrencyConvert>> example() {
-        return ResponseEntity.ok(
+    public ResponseEntity<ListCurrencyConvert> example() {
+        return ResponseEntity.ok(new ListCurrencyConvert(
                 Arrays.asList(
                         new CurrencyConvert("rub", "usd", 70235234), // 70 рублей
                         new CurrencyConvert("usd", "rub", 21341) // Два цента
                 )
-        );
+        ));
     }
 
     /**
@@ -71,5 +62,12 @@ public class CurrencyControllerAdmin {
     public ResponseEntity clear() {
         cs.clear();
         return ResponseEntity.ok().build();
+    }
+
+    static class ListCurrencyConvert extends ArrayList<CurrencyConvert> {
+
+        ListCurrencyConvert(Collection<CurrencyConvert> collection) {
+            super(collection);
+        }
     }
 }

@@ -17,6 +17,8 @@ import ru.mirea.Tokens.TokenFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,35 +27,25 @@ import static ru.mirea.Tokens.Role.USER;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class BalanceControllerTest {
+public class ControllersTest {
 
-    private final Log log = LogFactory.getLog(BalanceControllerTest.class);
+    private final Log log = LogFactory.getLog(ControllersTest.class);
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     BalanceController bc;
 
-    String admin = TokenFactory.generateToken(
-            new PayloadToken(
-                    1,
-                    "admin",
-                    ADMIN
-            )
-    );
+    @Autowired
+    CurrencyController cc;
 
-    String user = TokenFactory.generateToken(
-            new PayloadToken(
-                    2,
-                    "test",
-                    USER
-            )
-    );
+    @Autowired
+    CurrencyControllerAdmin ccAdmin;
 
     @Before
     public void forTest() {
         bc.clear();
-        cc.clear();
+        ccAdmin.clear();
         log.info("Проверка, что в БД нет данных.");
         assertEquals(0, bc.getBalance().getBody().size());
     }
@@ -76,5 +68,39 @@ public class BalanceControllerTest {
         log.info(objectMapper.writeValueAsString(re.getBody()));
         assertEquals("[{\"user_id\":1,\"iterator\":[{\"countPenny\":15000,\"currency\":\"rub\"},{\"countPenny\":1,\"currency\":\"usd\"}]}]",
                 objectMapper.writeValueAsString(re.getBody()));
+    }
+
+    @Test
+    public void currency_buy() {
+        ccAdmin.update(new CurrencyControllerAdmin.ListCurrencyConvert(Arrays.asList(
+                new CurrencyConvert("rub", "usd", 70235234), // 70 рублей
+                new CurrencyConvert("usd", "rub", 21341) // 2 цента
+        )));
+        User user = new User(
+                2, Arrays.asList(
+                        new Money(7024, "rub"), // 70 рублей
+                new Money(2, "usd") // 2 цента
+        ));
+        bc.updateBalance(user);
+
+        log.info("Сейчас пользователь пройдёт процедуру покупки валюты.");
+        cc.buyCurrency(TokenFactory.generateToken(user.getUser_id(), "test", USER), "rub", "usd", 100);
+        log.info(bc.getBalance(user.getUser_id()).getBody());
+        Objects.requireNonNull(bc.getBalance(user.getUser_id()).getBody()).containsAll(
+                Arrays.asList(
+                        new Money(0, "rub"),
+                        new Money(102, "usd")
+                )
+        );
+
+        cc.buyCurrency(TokenFactory.generateToken(user.getUser_id(), "test", USER), "usd", "rub", 100);
+        log.info(bc.getBalance(user.getUser_id()).getBody());
+        Objects.requireNonNull(bc.getBalance(user.getUser_id()).getBody()).containsAll(
+                Arrays.asList(
+                        new Money(100, "rub"),
+                        new Money(100, "usd")
+                )
+        );
+
     }
 }

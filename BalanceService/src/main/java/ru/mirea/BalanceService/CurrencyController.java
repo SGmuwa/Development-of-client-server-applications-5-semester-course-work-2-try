@@ -2,10 +2,13 @@ package ru.mirea.BalanceService;
 
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.Tokens.TokenFactory;
+
+import java.util.Collection;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -14,6 +17,23 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class CurrencyController {
 
     private final Log log = LogFactory.getLog(CurrencyController.class);
+
+    private final CurrencyService cs;
+
+    @Autowired
+    public CurrencyController(CurrencyService cs) {
+        this.cs = cs;
+    }
+
+    /**
+     * Получает все записи из БД по ценам валют.
+     */
+    @RequestMapping(method = GET)
+    public ResponseEntity<Collection<CurrencyConvert>> show() {
+        return ResponseEntity.ok(
+                cs.getAll()
+        );
+    }
 
     /**
      * Пользователь хочет купить валюту.
@@ -34,7 +54,7 @@ public class CurrencyController {
     ) {
         log.info("User buy currency: " + from + to + count);
         long user_id = TokenFactory.decoderToken(token).getId();
-        return bs.buyCurrency(user_id, from, new Money(count, to)) ?
+        return cs.buyCurrency(user_id, from, new Money(count, to)) ?
                 ResponseEntity.ok().build()
                 : ResponseEntity.badRequest().build();
     }

@@ -21,6 +21,8 @@ public class CurrencyService {
 
     private JdbcTemplate jdbcTemplate;
 
+    private final BalanceService bs;
+
     private RowMapper<CurrencyConvert> currencyConvertMapper = (ResultSet rs, int rowNum) ->
             new CurrencyConvert(
                     rs.getString("currencyNameFrom"),
@@ -28,8 +30,9 @@ public class CurrencyService {
                     rs.getLong("costPennyPennyPennyFrom")
             );
 
-    public CurrencyService(JdbcTemplate jdbcTemplate) {
+    public CurrencyService(JdbcTemplate jdbcTemplate, BalanceService bs) {
         log.info("init CurrencyService.");
+        this.bs = bs;
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcTemplate.execute(
                 // Пример верных данных (26.12.2019):
@@ -95,8 +98,8 @@ public class CurrencyService {
         jdbcTemplate.update(
                 "DELETE FROM currencyservice WHERE currencyNameFrom = ?1 AND currencyNameTo = ?2;" +
                         "INSERT currencyservice VALUES (?1, ?2, ?3)",
-                add.getFrom(),
-                add.getTo(),
+                '\'' + add.getFrom() + '\'',
+                '\'' + add.getTo() + '\'',
                 add.getCostPennyPennyPenny()
         );
     }
@@ -127,9 +130,36 @@ public class CurrencyService {
     }
 
     /**
+     * Покупка валюты пользователем.
+     * @param user_id Идентификатор пользователя, который хочет купить валюту.
+     * @param fromName Название валюты, которую он хочет отдать.
+     * @param target Название и количество новой валюты, которую он хочет получить.
+     * @return Операция совершена.
+     */
+    boolean buyCurrency(long user_id, String fromName, Money target) {
+        try {
+            Money need = howMuchYouNeedOldCurrencyForBuyCurrentNewCurrency(fromName, target);
+            if(bs.pay(user_id, need)) { // Отнимаем у пользователя деньги
+                if(bs.give(user_id, target))
+                    return true;
+                else {
+                    bs.give(user_id, need); // Не получилось совершить операцию
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Удаление данных с таблицы.
      */
     void clear() {
-
+        jdbcTemplate.update(
+                "DELETE FROM currencyservice"
+        );
     }
 }
