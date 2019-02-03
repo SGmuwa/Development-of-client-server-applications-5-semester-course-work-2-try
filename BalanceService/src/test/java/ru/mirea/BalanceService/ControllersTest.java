@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static ru.mirea.Tokens.Role.ADMIN;
 import static ru.mirea.Tokens.Role.USER;
@@ -66,7 +67,7 @@ public class ControllersTest {
         assertNotNull(re.getBody());
         assertEquals(1, re.getBody().size());
         log.info(objectMapper.writeValueAsString(re.getBody()));
-        assertEquals("[{\"user_id\":1,\"iterator\":[{\"countPenny\":15000,\"currency\":\"rub\"},{\"countPenny\":1,\"currency\":\"usd\"}]}]",
+        assertEquals("[{\"user_id\":1,\"iterator\":[{\"currency\":\"rub\",\"penny\":15000},{\"currency\":\"usd\",\"penny\":1}]}]",
                 objectMapper.writeValueAsString(re.getBody()));
     }
 
@@ -86,13 +87,17 @@ public class ControllersTest {
         log.info("Сейчас пользователь пройдёт процедуру покупки валюты.");
         cc.buyCurrency(TokenFactory.generateToken(user.getUser_id(), "test", USER), "rub", "usd", 100);
         log.info(bc.getBalance(user.getUser_id()).getBody());
-        Objects.requireNonNull(bc.getBalance(user.getUser_id()).getBody()).containsAll(
+        ResponseEntity<Collection<Money>> responseEntity = bc.getBalance(user.getUser_id());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        Collection<Money> cash = responseEntity.getBody();
+        assertNotNull(cash);
+        assertFalse(cash.isEmpty());
+        cash.containsAll(
                 Arrays.asList(
                         new Money(0, "rub"),
                         new Money(102, "usd")
                 )
         );
-
         cc.buyCurrency(TokenFactory.generateToken(user.getUser_id(), "test", USER), "usd", "rub", 100);
         log.info(bc.getBalance(user.getUser_id()).getBody());
         Objects.requireNonNull(bc.getBalance(user.getUser_id()).getBody()).containsAll(

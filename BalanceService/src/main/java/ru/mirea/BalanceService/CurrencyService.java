@@ -96,10 +96,14 @@ public class CurrencyService {
      */
     void addConvert(CurrencyConvert add) {
         jdbcTemplate.update(
-                "DELETE FROM currencyservice WHERE currencyNameFrom = ?1 AND currencyNameTo = ?2;" +
-                        "INSERT currencyservice VALUES (?1, ?2, ?3)",
-                '\'' + add.getFrom() + '\'',
-                '\'' + add.getTo() + '\'',
+                "DELETE FROM currencyservice WHERE currencyNameFrom = ? AND currencyNameTo = ?",
+                add.getFrom(),
+                add.getTo()
+        );
+        jdbcTemplate.update(
+                "INSERT currencyservice VALUES (?, ?, ?)",
+                add.getFrom(),
+                add.getTo(),
                 add.getCostPennyPennyPenny()
         );
     }
@@ -114,7 +118,7 @@ public class CurrencyService {
      */
     private CurrencyConvert getCurrency(String from, String target) throws Exception {
         List<CurrencyConvert> list = jdbcTemplate.query("SELECT costPennyPennyPenny FROM currencyService WHERE " +
-                "currencyNameFrom='?1' AND currencyNameTo='?2'", currencyConvertMapper, from, target);
+                "currencyNameFrom=? AND currencyNameTo=?", currencyConvertMapper, from, target);
         if(list.size() != 1) {
             if(list.size() == 0)
                 log.warn(String.format("Can't find currencyConvert: %1s %2s", from, target));
