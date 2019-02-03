@@ -14,13 +14,15 @@ import static ru.mirea.Tokens.Role.ADMIN;
 import static ru.mirea.Tokens.Role.USER;
 
 @Component
-@WebFilter(urlPatterns = {"/*"})
+@WebFilter(urlPatterns = "/*")
 public class DefaultFilter implements Filter {
 
-    Log log = LogFactory.getLog(getClass());
+    private final Log log = LogFactory.getLog(getClass());
 
     @Override
-    public void init(FilterConfig filterConfig) {}
+    public void init(FilterConfig filterConfig) {
+        log.info("default filter init.");
+    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

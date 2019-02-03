@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "d6d55646-99e2-4114-a102-92fc8d355bec",
+		"name": "Development-of-client-server-applications-5-semester-course-work-2-try",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "BalanceService",
+			"item": [
+				{
+					"name": "Получить все кошельки пользователей",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+								"description": "Админ 1 ид",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8083/admin/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"admin",
+								""
+							]
+						},
+						"description": "Нужны права адменитратора"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
