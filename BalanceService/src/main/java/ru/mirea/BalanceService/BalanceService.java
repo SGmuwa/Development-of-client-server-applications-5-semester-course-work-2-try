@@ -110,10 +110,11 @@ public class BalanceService {
     boolean give(long user_id, Money money) {
         if(money.getPenny() > 0) {
             int count = jdbcTemplate.update(
-                    "UPDATE balanceservice SET penny=(penny+?3) " +
-                            "WHERE (user_id=?1 AND currency_name = ?2 AND penny+?3<=(?4))",
+                    "UPDATE balanceservice SET penny=(penny+?) " +
+                            "WHERE (user_id=? AND currency_name = ? AND penny+?<=(?))",
+                    money.getPenny(),
                     user_id,
-                    '\'' + money.getCurrency() + '\'',
+                    money.getCurrency(),
                     money.getPenny(),
                     Long.MAX_VALUE
             );
@@ -122,10 +123,9 @@ public class BalanceService {
             if(count > 0)
                 return true;
             return jdbcTemplate.update(
-                    "INSERT balanceservice VALUES " +
-                            "(user_id=?1, currency_name=?2, penny=?3)",
+                    "INSERT balanceservice VALUES (user_id=?, currency_name=?, penny=?)",
                     user_id,
-                    '\'' + money.getCurrency() + '\'',
+                    money.getCurrency(),
                     money.getPenny()
             ) > 0;
         }
@@ -144,10 +144,10 @@ public class BalanceService {
     boolean pay(long user_id, Money money) {
         if (money.getPenny() > 0)
             return jdbcTemplate.update(
-                    "UPDATE balanceservice SET penny=(penny-?3) " +
-                            "WHERE (user_id=?1 AND currency_name = ?2 AND penny>=(?3))",
+                    "UPDATE balanceservice SET penny=(penny-?) WHERE (user_id=? AND currency_name = ? AND penny>=?)",
+                    money.getPenny(),
                     user_id,
-                    '\'' + money.getCurrency() + '\'',
+                    money.getCurrency(),
                     money.getPenny()
             ) > 0;
         else

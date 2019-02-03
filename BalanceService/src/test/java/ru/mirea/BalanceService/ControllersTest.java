@@ -20,9 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static ru.mirea.Tokens.Role.ADMIN;
 import static ru.mirea.Tokens.Role.USER;
 
@@ -85,27 +83,30 @@ public class ControllersTest {
         bc.updateBalance(user);
 
         log.info("Сейчас пользователь пройдёт процедуру покупки валюты.");
-        cc.buyCurrency(TokenFactory.generateToken(user.getUser_id(), "test", USER), "rub", "usd", 100);
+        ResponseEntity<Boolean> responseEntity1 = cc.buyCurrency(TokenFactory.generateToken(user.getUser_id(), "test", USER), "rub", "usd", 100);
+        assertEquals(HttpStatus.OK, responseEntity1.getStatusCode());
+        assertNotNull(responseEntity1.getBody());
+        assertTrue(responseEntity1.getBody());
         log.info(bc.getBalance(user.getUser_id()).getBody());
-        ResponseEntity<Collection<Money>> responseEntity = bc.getBalance(user.getUser_id());
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        Collection<Money> cash = responseEntity.getBody();
+        ResponseEntity<Collection<Money>> responseEntity2 = bc.getBalance(user.getUser_id());
+        assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
+        Collection<Money> cash = responseEntity2.getBody();
         assertNotNull(cash);
         assertFalse(cash.isEmpty());
-        cash.containsAll(
+        assertTrue(cash.containsAll(
                 Arrays.asList(
                         new Money(0, "rub"),
                         new Money(102, "usd")
                 )
-        );
+        ));
         cc.buyCurrency(TokenFactory.generateToken(user.getUser_id(), "test", USER), "usd", "rub", 100);
         log.info(bc.getBalance(user.getUser_id()).getBody());
-        Objects.requireNonNull(bc.getBalance(user.getUser_id()).getBody()).containsAll(
+        assertTrue(Objects.requireNonNull(bc.getBalance(user.getUser_id()).getBody()).containsAll(
                 Arrays.asList(
                         new Money(100, "rub"),
                         new Money(100, "usd")
                 )
-        );
+        ));
 
     }
 }

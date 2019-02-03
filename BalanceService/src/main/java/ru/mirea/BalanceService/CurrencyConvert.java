@@ -82,7 +82,12 @@ class CurrencyConvert {
         2 * 70 000000 = 140 000000
         140 000000 / 10000 = 140 00 копеек. Округлить надо в большую сторону.
          */
-        return Math.floorDiv(Math.multiplyExact(costPennyPennyPenny, needNew), 10000);
+        long bigCourse = Math.multiplyExact(costPennyPennyPenny, needNew); // Большой курс
+        long result = Math.floorDiv(bigCourse, 1000000);
+        long mod = Math.floorMod(bigCourse, 1000000);
+        if (mod > 1000000 / 3)
+            result += 1;
+        return result;
     }
 
     /**

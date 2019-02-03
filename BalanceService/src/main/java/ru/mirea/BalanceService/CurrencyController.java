@@ -55,7 +55,7 @@ public class CurrencyController {
         log.info("User buy currency: " + from + to + count);
         long user_id = TokenFactory.decoderToken(token).getId();
         return cs.buyCurrency(user_id, from, new Money(count, to)) ?
-                ResponseEntity.ok().build()
-                : ResponseEntity.badRequest().build();
+                ResponseEntity.ok(true)
+                : ResponseEntity.ok(false);
     }
 }

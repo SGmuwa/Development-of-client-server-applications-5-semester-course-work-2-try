@@ -27,7 +27,7 @@ public class CurrencyService {
             new CurrencyConvert(
                     rs.getString("currencyNameFrom"),
                     rs.getString("currencyNameTo"),
-                    rs.getLong("costPennyPennyPennyFrom")
+                    rs.getLong("costPennyPennyPenny")
             );
 
     public CurrencyService(JdbcTemplate jdbcTemplate, BalanceService bs) {
@@ -117,8 +117,10 @@ public class CurrencyService {
      * либо присутствуют анамалии.
      */
     private CurrencyConvert getCurrency(String from, String target) throws Exception {
-        List<CurrencyConvert> list = jdbcTemplate.query("SELECT costPennyPennyPenny FROM currencyService WHERE " +
-                "currencyNameFrom=? AND currencyNameTo=?", currencyConvertMapper, from, target);
+        List<CurrencyConvert> list = jdbcTemplate.query("SELECT * FROM currencyService WHERE currencynamefrom=? AND currencynameto=?",
+                currencyConvertMapper,
+                from,
+                target);
         if(list.size() != 1) {
             if(list.size() == 0)
                 log.warn(String.format("Can't find currencyConvert: %1s %2s", from, target));
