@@ -53,7 +53,7 @@ public class CurrencyService {
      */
     Money howMuchYouGetNewCurrencyFromOldCurrency(Money from, String target) throws Exception {
         CurrencyConvert convert = getCurrency(from.getCurrency(), target);
-        return new Money(convert.convertUndo(from.getCountPenny()), target);
+        return new Money(convert.convertUndo(from.getPenny()), target);
     }
 
     /**
@@ -66,7 +66,7 @@ public class CurrencyService {
      */
     Money howMuchYouNeedOldCurrencyForBuyCurrentNewCurrency(String from, Money target) throws Exception {
         CurrencyConvert convert = getCurrency(from, target.getCurrency());
-        return new Money(convert.convert(target.getCountPenny()), from);
+        return new Money(convert.convert(target.getPenny()), from);
     }
 
     /**

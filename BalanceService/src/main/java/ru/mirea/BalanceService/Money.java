@@ -36,7 +36,7 @@ public class Money implements Comparable<Money> {
     /**
      * @seenizer countPenny
      */
-    public long getCountPenny() {
+    public long getPenny() {
         return countPenny;
     }
 

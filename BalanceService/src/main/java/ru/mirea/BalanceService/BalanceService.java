@@ -12,7 +12,14 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 
 /**
+ * Данный сервис обеспечивает хранение средств пользователей
+ * в разных валютах.
+ * Стоит заметить, что сервис не ведёт историю транзакций,
+ * так как это не входит в задание, а также увеличит проектирование
+ * программы на несколько часов.
+ * Данный класс не потокобезопасен.
  * @author <a href="https://www.github.com/SGmuwa">[SG]Muwa</a>
+ * @since 01.01.2019
  */
 @Component
 public class BalanceService {
@@ -20,8 +27,6 @@ public class BalanceService {
     private JdbcTemplate jdbcTemplate;
 
     private Log log = LogFactory.getLog(getClass());
-
-    private CurrencyService currencyService;
 
     /**
      * Маппер для всей таблицы целеком.
@@ -41,9 +46,8 @@ public class BalanceService {
     };
 
     @Autowired
-    BalanceService(JdbcTemplate jdbcTemplate, CurrencyService currencyService) {
+    BalanceService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.currencyService = currencyService;
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS BalanceService(" +
                 "user_id BIGINT NOT NULL," +
                 "currency_name CHAR(32) NOT NULL," +
@@ -88,12 +92,30 @@ public class BalanceService {
                 sb.append(",");
             args[numberOfParam-1] = user.getUser_id();
             args[numberOfParam] = m.getCurrency();
-            args[numberOfParam+1] = m.getCountPenny();
+            args[numberOfParam+1] = m.getPenny();
             sb.append(String.format("(?%d, ?%d, ?%d)", numberOfParam++, numberOfParam++, numberOfParam++));
         }
         // Запрос полностью готов.
         jdbcTemplate.update("DELETE FROM balanceservice WHERE user_id = " + user.getUser_id());
         jdbcTemplate.update(sb.toString(), args);
+    }
+
+    /**
+     * Снимает деньги с пользователя.
+     * Если у пользователя нет денег, то функция не будет выполнена.
+     * @param user_id Идентификатор пользователя, у которого сняли деньги.
+     * @param money Деньги, который надо снять с пользователя.
+     * @return True, если деньги были сняты. Существует пользователь и у него
+     * достаточно средств. Иначе false.
+     */
+    boolean pay(long user_id, Money money) {
+        return jdbcTemplate.update(
+                "UPDATE balanceservice SET penny=(penny-?3) " +
+                        "WHERE (user_id=?1 AND currency_name = ?2 AND penny>=(?3))",
+                user_id,
+                money.getCurrency(),
+                money.getPenny()
+        ) > 0;
     }
 
     boolean buyCurrency(long user_id, String fromName, Money target) {

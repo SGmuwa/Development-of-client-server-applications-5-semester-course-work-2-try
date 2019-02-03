@@ -54,30 +54,6 @@ public class BalanceController {
     }
 
     /**
-     * Пользователь хочет купить валюту.
-     * @param token Токен пользователя, который хочет купить валюту.
-     * @param currencyFrom Валюта, которую он готов потратить.
-     * @param currencyTo Валюта, которую пользователь хочет купить.
-     * @param count Количество минимальных единиц* валюты, которую пользователь хочет купить.
-     *              * - копейки, центы и другие.
-     * @return True, если транзакция выполнена. Иначе - False.
-     */
-    @RequestMapping (value = "user/buy_currency/{currencyFrom}/{currencyTo}/{count}", method = GET)
-    @ResponseBody
-    public ResponseEntity<Boolean> buyCurrency(
-            @RequestHeader("token") String token,
-            @PathVariable String currencyFrom,
-            @PathVariable String currencyTo,
-            @PathVariable long count
-    ) {
-        log.info("User buy currency: " + currencyFrom + currencyTo + count);
-        long user_id = TokenFactory.decoderToken(token).getId();
-        return bs.buyCurrency(user_id, currencyFrom, new Money(count, currencyTo)) ?
-                ResponseEntity.ok().build()
-                : ResponseEntity.badRequest().build();
-    }
-
-    /**
      * Изменение баланса
      * @param user Пользователь, у которого надо обновить баланс.
      * @return ok

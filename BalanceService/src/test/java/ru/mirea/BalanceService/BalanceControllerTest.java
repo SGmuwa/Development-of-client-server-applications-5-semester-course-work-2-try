@@ -36,7 +36,7 @@ public class BalanceControllerTest {
 
     String admin = TokenFactory.generateToken(
             new PayloadToken(
-                    -1,
+                    1,
                     "admin",
                     ADMIN
             )
@@ -44,7 +44,7 @@ public class BalanceControllerTest {
 
     String user = TokenFactory.generateToken(
             new PayloadToken(
-                    -2,
+                    2,
                     "test",
                     USER
             )
@@ -53,6 +53,7 @@ public class BalanceControllerTest {
     @Before
     public void forTest() {
         bc.clear();
+        cc.clear();
         log.info("Проверка, что в БД нет данных.");
         assertEquals(0, bc.getBalance().getBody().size());
     }

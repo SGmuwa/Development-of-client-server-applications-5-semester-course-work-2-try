@@ -1,75 +1,41 @@
 package ru.mirea.BalanceService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import ru.mirea.Tokens.TokenFactory;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
-@RequestMapping(value = "admin/currency")
+@RequestMapping("user/currency")
 public class CurrencyController {
 
-    private CurrencyService cs;
-
-    @Autowired
-    public CurrencyController(CurrencyService cs) {
-        this.cs = cs;
-    }
+    private final Log log = LogFactory.getLog(CurrencyController.class);
 
     /**
-     * Обновление курса валют. Если его не существует, то будет добавлен.
-     * @param currencyConvert Новые курсы.
+     * Пользователь хочет купить валюту.
+     * @param token Токен пользователя, который хочет купить валюту.
+     * @param from Валюта, которую он готов потратить.
+     * @param to Валюта, которую пользователь хочет купить.
+     * @param count Количество минимальных единиц* валюты, которую пользователь хочет купить.
+     *              * - копейки, центы и другие.
+     * @return True, если транзакция выполнена. Иначе - False.
      */
-    @RequestMapping(method = POST)
-    public ResponseEntity update(@RequestBody Collection<CurrencyConvert> currencyConvert) {
-        cs.addConvert(currencyConvert);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Обновление курса валюты. Если его не существует, то будет добавлен.
-     * @param currencyConvert Новый курс.
-     */
-    @RequestMapping(method = POST)
-    public ResponseEntity update(@RequestBody CurrencyConvert currencyConvert) {
-        cs.addConvert(currencyConvert);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Получает все записи из БД по ценам валют.
-     */
-    @RequestMapping(method = GET)
-    public ResponseEntity<Collection<CurrencyConvert>> show() {
-        return ResponseEntity.ok(
-                cs.getAll()
-        );
-    }
-
-    @RequestMapping(value = "/example")
-    public ResponseEntity<Collection<CurrencyConvert>> example() {
-        return ResponseEntity.ok(
-                Arrays.asList(
-                        new CurrencyConvert("rub", "usd", 70235234), // 70 рублей
-                        new CurrencyConvert("usd", "rub", 21341) // Два цента
-                )
-        );
-    }
-
-    /**
-     * Очистка сервиса валют.
-     */
-    @RequestMapping(method = DELETE)
-    public ResponseEntity clear() {
-        cs.clear();
-        return ResponseEntity.ok().build();
+    @RequestMapping (value = "user/buy_currency", method = GET)
+    @ResponseBody
+    public ResponseEntity<Boolean> buyCurrency(
+            @RequestHeader("token") String token,
+            @RequestParam String from,
+            @RequestParam String to,
+            @RequestParam long count
+    ) {
+        log.info("User buy currency: " + from + to + count);
+        long user_id = TokenFactory.decoderToken(token).getId();
+        return bs.buyCurrency(user_id, from, new Money(count, to)) ?
+                ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
     }
 }
