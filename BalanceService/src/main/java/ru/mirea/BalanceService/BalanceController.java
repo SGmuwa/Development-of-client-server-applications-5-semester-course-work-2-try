@@ -10,6 +10,7 @@ import ru.mirea.Tokens.TokenFactory;
 
 import java.util.Collection;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -68,7 +69,7 @@ public class BalanceController {
     @RequestMapping (value = "admin/user", method = POST)
     @ResponseBody
     public ResponseEntity updateBalance(@RequestBody User user) {
-        log.info("admin/user: " + user.toString());
+        log.info("POST: admin/user: " + user.toString());
         bs.updateOrAddUser(user);
         return ResponseEntity.ok().build();
     }
@@ -77,9 +78,9 @@ public class BalanceController {
      * Очистка базы данных от всех записей.
      * @return ok
      */
-    @RequestMapping (value = "admin/clear", method = GET)
+    @RequestMapping (value = "admin", method = DELETE)
     public ResponseEntity clear() {
-        log.info("admin/clear");
+        log.info("DELETE: admin");
         bs.clear();
         return ResponseEntity.ok().build();
     }

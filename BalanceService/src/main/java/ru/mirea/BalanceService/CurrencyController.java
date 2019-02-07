@@ -28,7 +28,7 @@ public class CurrencyController {
     /**
      * Получает все записи из БД по ценам валют.
      */
-    @RequestMapping(method = GET)
+    @GetMapping
     public ResponseEntity<Collection<CurrencyConvert>> show() {
         return ResponseEntity.ok(
                 cs.getAll()
@@ -44,7 +44,7 @@ public class CurrencyController {
      *              * - копейки, центы и другие.
      * @return True, если транзакция выполнена. Иначе - False.
      */
-    @RequestMapping (value = "user/buy_currency", method = GET)
+    @RequestMapping (value = "/buy_currency", method = GET)
     @ResponseBody
     public ResponseEntity<Boolean> buyCurrency(
             @RequestHeader("token") String token,

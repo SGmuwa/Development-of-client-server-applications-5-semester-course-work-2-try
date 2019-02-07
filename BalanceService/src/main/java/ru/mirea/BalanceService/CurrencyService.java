@@ -76,7 +76,7 @@ public class CurrencyService {
      * Получение всех возможных переводов.
      */
     List<CurrencyConvert> getAll() {
-        return jdbcTemplate.query("SELECT costPennyPennyPenny FROM currencyService", currencyConvertMapper);
+        return jdbcTemplate.query("SELECT * FROM currencyService", currencyConvertMapper);
     }
 
     /**
@@ -129,7 +129,7 @@ public class CurrencyService {
             throw new Exception("you can't buy currency: from " + from + " target " + target); // Нельзя продавать валюту когда нет цены или
         }
         CurrencyConvert convert = list.get(0);
-        if(convert.prop_isReady())
+        if(convert.ready())
             return convert;
         else
             throw new Exception("you can't buy currency: from " + from + " target " + target);

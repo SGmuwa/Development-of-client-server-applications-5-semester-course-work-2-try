@@ -109,22 +109,24 @@ public class BalanceService {
      * @return True, если операция прошла успешно. False, если слишком много денег.
      */
     boolean give(long user_id, Money money) {
+        log.info("give. user_id: " + user_id + ", " + money);
         if(money.getPenny() > 0) {
             int count = jdbcTemplate.update(
                     "UPDATE balanceservice SET penny=(penny+?) " +
-                            "WHERE (user_id=? AND currency_name = ? AND penny+?<=(?))",
+                            "WHERE (user_id=? AND currency_name = ? AND penny+?<=(?) AND penny+?>0)",
                     money.getPenny(),
                     user_id,
                     money.getCurrency(),
                     money.getPenny(),
-                    Long.MAX_VALUE
+                    Long.MAX_VALUE,
+                    money.getPenny()
             );
             if(count > 1)
                 log.error("Найден дублирующий первичный ключ! user_id:" + user_id + ", money:" + money);
             if(count > 0)
                 return true;
             return jdbcTemplate.update(
-                    "INSERT balanceservice VALUES (user_id=?, currency_name=?, penny=?)",
+                    "INSERT INTO balanceservice (user_id, currency_name, penny) VALUES (?, ?, ?)",
                     user_id,
                     money.getCurrency(),
                     money.getPenny()
@@ -143,6 +145,7 @@ public class BalanceService {
      * достаточно средств. Иначе false.
      */
     boolean pay(long user_id, Money money) {
+        log.info("pay. user_id: " + user_id + ", " + money);
         if (money.getPenny() > 0)
             return jdbcTemplate.update(
                     "UPDATE balanceservice SET penny=(penny-?) WHERE (user_id=? AND currency_name = ? AND penny>=?)",

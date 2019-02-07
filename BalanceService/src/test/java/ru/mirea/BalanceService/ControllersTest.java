@@ -65,16 +65,16 @@ public class ControllersTest {
         assertNotNull(re.getBody());
         assertEquals(1, re.getBody().size());
         log.info(objectMapper.writeValueAsString(re.getBody()));
-        assertEquals("[{\"user_id\":1,\"iterator\":[{\"currency\":\"rub\",\"penny\":15000},{\"currency\":\"usd\",\"penny\":1}]}]",
+        assertEquals("[{\"user_id\":1,\"balance\":[{\"penny\":15000,\"currency\":\"rub\"},{\"penny\":1,\"currency\":\"usd\"}]}]",
                 objectMapper.writeValueAsString(re.getBody()));
     }
 
     @Test
     public void currency_buy() {
-        ccAdmin.update(new CurrencyControllerAdmin.ListCurrencyConvert(Arrays.asList(
+        ccAdmin.update(Arrays.asList(
                 new CurrencyConvert("rub", "usd", 70235234), // 70 рублей
                 new CurrencyConvert("usd", "rub", 21341) // 2 цента
-        )));
+        ));
         User user = new User(
                 2, Arrays.asList(
                         new Money(7024, "rub"), // 70 рублей

@@ -8,15 +8,20 @@ class CurrencyConvert {
     /**
      * Название валюты изначальной.
      */
-    private String from;
+    private final String from;
     /**
      * Название валюты новой.
      */
-    private String to;
+    private final String to;
     /**
      * Сколко 0,000001 валют {@link #from} надо для покупки валюты {@link #to}?
      */
-    private long costPennyPennyPenny;
+    private final long costPennyPennyPenny;
+
+    public CurrencyConvert() {
+        from = to = "";
+        costPennyPennyPenny = 0;
+    }
 
     /**
      * Создание экземпляра валюты.
@@ -24,7 +29,7 @@ class CurrencyConvert {
      * @param to Название новой валюты.
      * @param costPennyPennyPenny Сколко 0,000001 валют {@link #from} надо для покупки валюты {@link #to}?
      */
-    CurrencyConvert(String from, String to, long costPennyPennyPenny) {
+    public CurrencyConvert(String from, String to, long costPennyPennyPenny) {
         if(from == null || to == null || from.isEmpty() || to.isEmpty())
             throw new NullPointerException("from and to must be not null and must be not empty.");
         this.from = from;
@@ -58,7 +63,7 @@ class CurrencyConvert {
      * Отвечает на вопрос, можно ли конвектировать валюту.
      * @return {@code True} - можно. Иначе - {@code false}.
      */
-    boolean prop_isReady() { // isReady является именно свойством (property), а не полем (C#), поэтому
+    boolean ready() { // isReady является именно свойством (property), а не полем (C#), поэтому
         // надо разлечить для внешней системы, чтобы она не пыталась в конструктор
         // пихать ready.
         return costPennyPennyPenny > 0;
