@@ -35,14 +35,14 @@ class CurrencyConvert {
     /**
      * Получение названия изначальной валюты.
      */
-    String getFrom() {
+    public String getFrom() {
         return from;
     }
 
     /**
      * Получение название конечной валюты.
      */
-    String getTo() {
+    public String getTo() {
         return to;
     }
 

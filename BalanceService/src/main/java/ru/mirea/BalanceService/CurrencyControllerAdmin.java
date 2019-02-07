@@ -25,7 +25,7 @@ public class CurrencyControllerAdmin {
     }
 
     /**
-     * Обновление курса валют. Если его не существует, то будет добавлен.
+     * Функция изменяет курсы валют. Если цена курса не существовала ранее, то курс будет добавлен.
      * @param currencyConvert Новые курсы.
      */
     @RequestMapping(value = "/all", method = POST)

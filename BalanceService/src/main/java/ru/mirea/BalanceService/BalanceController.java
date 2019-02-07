@@ -43,14 +43,21 @@ public class BalanceController {
     }
 
     /**
-     * Узнаём все кошельки всех пользователей.
-     * @return Здесь расписаны все кошельки пользователя.
+     * Проверка баланса.
+     * @param user_id Пользователь, у которого надо проверить баланс.
+     * @return Если user_id равен null, то вернётся Collection of users. Все пользователи и их кошельки.
+     * Если user_id равен некоторму числу, то вернётся Collection of money. Все его кошельки.
      */
     @RequestMapping (value = "admin", method = GET)
     @ResponseBody
-    public ResponseEntity<Collection<User>> getBalance() {
-        log.info("get users about");
-        return ResponseEntity.ok(bs.getUserInfo());
+    public ResponseEntity<Collection<?>> getBalance(@RequestParam(required = false) Long user_id) {
+        log.info("admin/" + user_id);
+        if(user_id == null)
+            return ResponseEntity.ok(bs.getUserInfo());
+        User user = bs.getUserInfo(user_id);
+        if(user == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(user.getBalance());
     }
 
     /**
@@ -64,21 +71,6 @@ public class BalanceController {
         log.info("admin/user: " + user.toString());
         bs.updateOrAddUser(user);
         return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Проверка баланса.
-     * @param user_id Пользователь, у которого надо проверить баланс.
-     * @return ok
-     */
-    @RequestMapping (value = "admin/{user_id}", method = GET)
-    @ResponseBody
-    public ResponseEntity<Collection<Money>> getBalance(@PathVariable long user_id) {
-        log.info("admin/" + user_id);
-        User user = bs.getUserInfo(user_id);
-        if(user == null)
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(user.getBalance());
     }
 
     /**

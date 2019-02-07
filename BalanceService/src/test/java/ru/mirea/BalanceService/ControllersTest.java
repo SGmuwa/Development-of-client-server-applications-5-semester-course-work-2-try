@@ -46,7 +46,7 @@ public class ControllersTest {
         bc.clear();
         ccAdmin.clear();
         log.info("Проверка, что в БД нет данных.");
-        assertEquals(0, bc.getBalance().getBody().size());
+        assertEquals(0, bc.getBalance((Long)null).getBody().size());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ControllersTest {
         );
         log.info("Test json user sample: " + objectMapper.writeValueAsString(user));
         bc.updateBalance(user);
-        ResponseEntity<Collection<User>> re = bc.getBalance();
+        ResponseEntity<Collection<?>> re = bc.getBalance((Long)null);
         assertNotNull(re);
         assertEquals(HttpStatus.OK, re.getStatusCode());
         assertNotNull(re.getBody());
@@ -88,9 +88,9 @@ public class ControllersTest {
         assertNotNull(responseEntity1.getBody());
         assertTrue(responseEntity1.getBody());
         log.info(bc.getBalance(user.getUser_id()).getBody());
-        ResponseEntity<Collection<Money>> responseEntity2 = bc.getBalance(user.getUser_id());
+        ResponseEntity<Collection<?>> responseEntity2 = bc.getBalance(user.getUser_id());
         assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
-        Collection<Money> cash = responseEntity2.getBody();
+        Collection<?> cash = responseEntity2.getBody();
         assertNotNull(cash);
         assertFalse(cash.isEmpty());
         assertTrue(cash.containsAll(
