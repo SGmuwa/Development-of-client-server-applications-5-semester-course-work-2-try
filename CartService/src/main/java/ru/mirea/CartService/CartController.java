@@ -1,69 +1,69 @@
 package ru.mirea.CartService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import ru.mirea.Tokens.TokenFactory;
 
-import java.util.List;
+import java.util.Collection;
 
 @Controller
+@RequestMapping("/user")
 public class CartController {
 
-    private final ServiceForCart cs;
+    private final CartService cs;
 
     @Autowired
-    public CartController(ServiceForCart cs) {
+    public CartController(CartService cs) {
         this.cs = cs;
     }
 
     /**
-     * Положить товар в корзину
-     * @param stuff Идентификатор товара, который надо положить в корзину.
-     * @param user_id Идентификатор пользователя.
-     * @param id
-     * @return
+     * Изменить количество товара в корзине.
+     * @param token Токен, в котором есть идентификатор пользователя (корзины).
      */
-    @RequestMapping(value = "user/cart/{user_id}/item/{stuff}/{id}", method = RequestMethod.PUT)
-    @ResponseBody
-    public String cart_putItem(@PathVariable long stuff,@PathVariable long user_id,@PathVariable int id) {
-        return cs.putItem_inCart(stuff,user_id, id);
+    @PutMapping
+    public void putItem(@RequestHeader("token") String token, @RequestBody CartElement cartElement) {
+        long user_id = TokenFactory.decoderToken(token).getId();
+        cs.updateOrAdd(user_id, cartElement);
     }
 
-
-    @RequestMapping(value = "user/delete_cart/{user_id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public String cart_deleteItem(@PathVariable int user_id) {
-        return cs.deleteCart(user_id);
+    /**
+     * Очистить корзину или убрать один товар из корзины.
+     * @param token Токен пользователя, в котором хранится его идентификатор.
+     * @param item_id Идентификатор товара, который надо очистить.
+     *                Если отправить NULL, будет очищена вся корзина.
+     */
+    @DeleteMapping
+    public void remove(@RequestHeader String token, @RequestParam(required = false) Long item_id) {
+        long user_id = TokenFactory.decoderToken(token).getId();
+        if(item_id == null)
+            cs.clear(user_id); // Пользователь хочет очистить всю корзину
+        else
+            cs.clear(user_id, item_id); // Пользователь хочет удалить из коризны только один элемент.
     }
 
-    //нельзя обращаться пользователям
-    @RequestMapping(value = "admin/cart/{user_id}/{id}", method = RequestMethod.DELETE)
+    /**
+     * Получение корзины пользователя.
+     * @param token Токен пользователя, в котором хранится его идентификатор.
+     * @return Перечень предметов в корзине.
+     */
+    @GetMapping
     @ResponseBody
-    public String deleteOneItem(@PathVariable int user_id,@PathVariable int id) {
-        return cs.deleteOneItem(user_id,id);
+    public Collection<CartElement> get(@RequestHeader String token) {
+        long user_id = TokenFactory.decoderToken(token).getId();
+         return cs.get(user_id);
     }
 
-
-    @RequestMapping(value = "user/get_cart/{user_id}", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Cart> cart_getCart(@PathVariable int user_id) {
-         return cs.getCart(user_id);
+    /**
+     * Оплата всей корзины.
+     * @param token Токен пользователя, в котором хранится его идентификатор.
+     * @return True, если оплата прошла. Иначе - false.
+     */
+    @GetMapping(value = "/pay")
+    public ResponseEntity<Boolean> pay(@RequestHeader String token) {
+        long user_id = TokenFactory.decoderToken(token).getId();
+        return cs.pay(user_id);
     }
-
-
-    @RequestMapping (value = "user/pay_cart/{user_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String pay(@PathVariable int user_id) { return cs.payCart(user_id); }
-
-    @RequestMapping (value = "user/get_cart_cost/{user_id}", method = RequestMethod.GET)
-    @ResponseBody
-    public String get_cart_cost(@PathVariable int user_id) {
-        return  cs.get_cart_cost(user_id);
-
-    }
-
 }
 

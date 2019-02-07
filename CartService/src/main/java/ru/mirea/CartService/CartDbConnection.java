@@ -18,9 +18,9 @@ public class CartDbConnection {
     }
 
     //Получить корзину
-    public List<Cart> getCart(int user_id){
+    public List<CartElement> getCart(int user_id){
             return jdbcTemplate.query("select * from Cart where user_id = ?", new Object[]{user_id},(ResultSet resultSet, int rowNum) -> {
-            return new Cart(resultSet.getInt("id"), resultSet.getInt("user_id"), resultSet.getInt("item_id"),resultSet.getString("type"),resultSet.getDouble("price") );
+            return new CartElement(resultSet.getInt("id"), resultSet.getInt("user_id"), resultSet.getInt("item_id"),resultSet.getString("type"),resultSet.getDouble("price") );
         });
     }
 
@@ -70,7 +70,7 @@ public class CartDbConnection {
             deleteCart(user_id);
             //jdbcTemplate.update("UPDATE Item SET count = (count - ?) WHERE id = ? ", new Object[]{1, id});
             /////updateBalance2(user_id, result);
-            return "Cart has been successfully paid";
+            return "CartElement has been successfully paid";
         }
         else return "You cannot afford this purchase";
     }
