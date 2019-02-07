@@ -54,14 +54,14 @@ public class BalanceController {
     }
 
     /**
-     * Изменение баланса
+     * Изменение баланса. Устанавливает абсолютно все кошельки ему. Старые - удаляются.
      * @param user Пользователь, у которого надо обновить баланс.
      * @return ok
      */
     @RequestMapping (value = "admin/user", method = POST)
     @ResponseBody
     public ResponseEntity updateBalance(@RequestBody User user) {
-        log.info("admin/user");
+        log.info("admin/user: " + user.toString());
         bs.updateOrAddUser(user);
         return ResponseEntity.ok().build();
     }

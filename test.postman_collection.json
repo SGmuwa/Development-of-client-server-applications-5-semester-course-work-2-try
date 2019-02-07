@@ -9,39 +9,130 @@
 			"name": "BalanceService",
 			"item": [
 				{
-					"name": "Получить все кошельки пользователей",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
-								"description": "Админ 1 ид",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8083/admin/",
-							"protocol": "http",
-							"host": [
-								"localhost"
+					"name": "Balance",
+					"item": [
+						{
+							"name": "Получить все кошельки пользователей",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "970a8930-89c5-40e7-b6bf-2e7e81de17c6",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"port": "8083",
-							"path": [
-								"admin",
-								""
-							]
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+										"description": "Админ 1 ид",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8083/admin",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8083",
+									"path": [
+										"admin"
+									]
+								},
+								"description": "Нужны права администратора"
+							},
+							"response": []
 						},
-						"description": "Нужны права адменитратора"
-					},
-					"response": []
+						{
+							"name": "Получить кошелёк текущего пользователя",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+										"description": "Админ ид 1",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8083/user",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8083",
+									"path": [
+										"user"
+									]
+								},
+								"description": "Текущий пользователь определяется токеном."
+							},
+							"response": []
+						},
+						{
+							"name": "Установить баланс пользователю",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+										"description": "Админ ид 1",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 1,\n    \"balance\": [\n        {\n            \"currency\": \"rub\",\n            \"penny\": 100000\n        },\n        {\n        \t\"currency\": \"usd\",\n        \t\"penny\": 1200\n        }\n    ]\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8083/admin/user",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8083",
+									"path": [
+										"admin",
+										"user"
+									]
+								},
+								"description": "Устанавливает абсолютно все кошельки ему."
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Currency",
+					"item": [],
+					"_postman_isSubFolder": true
 				}
 			]
 		}

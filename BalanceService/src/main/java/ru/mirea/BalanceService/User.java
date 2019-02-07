@@ -1,19 +1,32 @@
 package ru.mirea.BalanceService;
 
-import java.util.*;
-import java.util.function.Consumer;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonStreamContext;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.deser.ResolvableDeserializer;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-public class User implements Iterable<Money> {
+import java.io.IOException;
+import java.util.*;
+
+public class User {
     private final long user_id;
     private final List<Money> balance; //количество денег в базовой валюте
+
+    public User() {
+        this(0);
+    }
 
     /**
      * Создание пользователя, у которого есть деньги только в одной валюте.
      * @param user_id Идентификатор пользователя.
-     * @param balance Количество денег в заданной валюте.
+     * @param money Количество денег в заданной валюте.
      */
-    User(long user_id, Money balance) {
-        this(user_id, new ArrayList<>(Collections.singleton(balance)));
+    User(long user_id, Money money) {
+        this(user_id, new ArrayList<>(Collections.singleton(money)));
     }
 
     /**
@@ -29,13 +42,13 @@ public class User implements Iterable<Money> {
      * @param user_id Идентификатор пользователя.
      * @param balance Кошельки пользователя.
      */
-    User(long user_id, List<Money> balance) {
+    public User(long user_id, Collection<Money> balance) {
         this.user_id = user_id;
         if(balance == null)
             balance = Collections.emptyList();
         if(balance.contains(null))
             throw new NullPointerException("Balance element can't be null!");
-        this.balance = balance;
+        this.balance = new ArrayList<>(balance);
     }
 
     public long getUser_id() {
@@ -43,25 +56,30 @@ public class User implements Iterable<Money> {
     }
 
     /**
-     * Изменяет баланс пользователя заданной валюты.
-     * Если заданной валюты у пользователя нет, то добавляется новая.
-     * У пользователя может быть только один кошелёк в заданной валюте.
-     * @param balance Новый баланс пользователя.
+     * Возвращает копию кошельков пользователя.
+     * Копию нельзя модифицировать.
      */
-    void updateOrAddBalance(Money balance) {
-        synchronized (balance) {
-            this.balance.removeIf(m -> m.getCurrency().equals(balance.getCurrency()));
-            this.balance.add(balance);
-        }
+    public List<Money> getBalance() {
+        return Collections.unmodifiableList(balance);
     }
 
     /**
-     * Возвращает копию кошельков пользователя.
+     * Ищет баланс пользователя по определённой валюте.
+     * @param nameCurrency Название необходимой валюты.
+     * @return Возвращает количество денег по данной валюте.
      */
-    List<Money> getBalance() {
-        synchronized (balance) {
-            return new ArrayList<>(balance);
-        }
+    Money getBalance(String nameCurrency) {
+        for (Money m : getBalance())
+            if (m.getCurrency().equals(nameCurrency))
+                return m;
+        return new Money(0, nameCurrency);
+    }
+
+    /**
+     * Возвращает количество валют у пользователя.
+     */
+    int size() {
+        return balance.size();
     }
 
     /**
@@ -79,52 +97,30 @@ public class User implements Iterable<Money> {
     }
 
     /**
-     * Возвращает количество валют у пользователя.
+     * Изменяет баланс пользователя заданной валюты.
+     * Если заданной валюты у пользователя нет, то добавляется новая.
+     * У пользователя может быть только один кошелёк в заданной валюте.
+     * @param balance Новый баланс пользователя.
      */
-    public int size() {
-        return balance.size();
-    }
-
-    public Iterator<Money> getIterator() {
-        return iterator();
-    }
-
-    @Override
-    public Iterator<Money> iterator() {
-        return new Iterator<>() { // Гарантируем, что лист будет только для чтения.
-            Iterator<Money> it = balance.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
-            }
-
-            @Override
-            public Money next() {
-                return it.next();
-            }
-        };
+    void updateOrAddBalance(Money balance) {
+        synchronized (this.balance) {
+            this.balance.removeIf(m -> m.getCurrency().equals(balance.getCurrency()));
+            this.balance.add(balance);
+        }
     }
 
     @Override
-    public void forEach(Consumer<? super Money> action) {
-        this.balance.forEach(action);
-    }
-
-    @Override
-    public Spliterator<Money> spliterator() {
-        return this.balance.spliterator();
-    }
-
-    /**
-     * Ищет баланс пользователя по определённой валюте.
-     * @param nameCurrency Название необходимой валюты.
-     * @return Возвращает количество денег по данной валюте.
-     */
-    Money getBalance(String nameCurrency) {
-        for (Money m : this)
-            if (m.getCurrency().equals(nameCurrency))
-                return m;
-        return new Money(0, nameCurrency);
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder()
+                .append("User{")
+                .append("user_id=")
+                .append(user_id)
+                .append(", balance=[");
+        for (Money m :
+                balance) {
+            stringBuilder.append(m);
+        }
+        stringBuilder.append("]}");
+        return stringBuilder.toString();
     }
 }

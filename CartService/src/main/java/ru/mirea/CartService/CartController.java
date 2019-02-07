@@ -12,13 +12,24 @@ import java.util.List;
 @Controller
 public class CartController {
 
-    @Autowired
-    private ServiceForCart cs;
+    private final ServiceForCart cs;
 
-    @RequestMapping(value = "user/cart/{user_id}/item/{pet_or_stuff}/{id}", method = RequestMethod.PUT)
+    @Autowired
+    public CartController(ServiceForCart cs) {
+        this.cs = cs;
+    }
+
+    /**
+     * Положить товар в корзину
+     * @param stuff Идентификатор товара, который надо положить в корзину.
+     * @param user_id Идентификатор пользователя.
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "user/cart/{user_id}/item/{stuff}/{id}", method = RequestMethod.PUT)
     @ResponseBody
-    public String cart_putItem(@PathVariable String pet_or_stuff,@PathVariable int user_id,@PathVariable int id) throws JsonProcessingException {
-        return cs.putItem_inCart(pet_or_stuff,user_id, id);
+    public String cart_putItem(@PathVariable long stuff,@PathVariable long user_id,@PathVariable int id) {
+        return cs.putItem_inCart(stuff,user_id, id);
     }
 
 

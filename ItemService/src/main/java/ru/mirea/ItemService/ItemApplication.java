@@ -6,9 +6,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @ServletComponentScan
 @SpringBootApplication
-public class Application {
+public class ItemApplication {
     public static void main(String[] arg){
-        ConfigurableApplicationContext context = SpringApplication.run(Application.class);//Создали приложение
+        ConfigurableApplicationContext context = SpringApplication.run(ItemApplication.class);//Создали приложение
         context.getBean(ItemDBService.class).init();
     }
 }

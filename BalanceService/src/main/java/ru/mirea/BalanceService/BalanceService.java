@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**
@@ -87,7 +88,7 @@ public class BalanceService {
                 "INSERT INTO BalanceService VALUES "
         );
         int numberOfParam = 1;
-        for(Money m : user) {
+        for(Money m : user.getBalance()) {
             if(numberOfParam != 1)
                 sb.append(",");
             args[numberOfParam-1] = user.getUser_id();
