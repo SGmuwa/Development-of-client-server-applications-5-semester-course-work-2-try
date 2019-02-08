@@ -118,7 +118,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"user_id\": 1,\n    \"balance\": [\n        {\n            \"currency\": \"rub\",\n            \"penny\": 100000\n        },\n        {\n        \t\"currency\": \"usd\",\n        \t\"penny\": 1201\n        }\n    ]\n}"
+											"raw": "{\n    \"user_id\": 1,\n    \"balance\": [\n        {\n            \"currency\": \"rub\",\n            \"penny\": 100000\n        },\n        {\n        \t\"currency\": \"usd\",\n        \t\"penny\": 1200\n        }\n    ]\n}"
 										},
 										"url": {
 											"raw": "http://localhost:8083/admin/user",
@@ -283,7 +283,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "[\n    {\n        \"from\": \"rub\",\n        \"to\": \"usd\",\n        \"costPennyPennyPenny\": 70235234\n    },\n    {\n        \"from\": \"usd\",\n        \"to\": \"rub\",\n        \"costPennyPennyPenny\": 21341\n    },\n    {\n    \t\"from\": \"rub\",\n    \t\"to\": \"pet-bonus\",\n    \t\"costPennyPennyPenny\": 1000000\n    },\n    {\n    \t\"from\": \"usd\",\n    \t\"to\": \"pet-bonus\",\n    \t\"costPennyPennyPenny\": 20000\n    }\n]"
+											"raw": "[\n    {\n        \"to\": \"usd\",\n        \"price\": {\n            \"countUnits\": 702352,\n            \"currency\": \"rub\"\n        }\n    },\n    {\n        \"to\": \"rub\",\n        \"price\": {\n            \"countUnits\": 213,\n            \"currency\": \"usd\"\n        }\n    },\n    {\n        \"to\": \"pet-bonus\",\n        \"price\": {\n            \"countUnits\": 10000,\n            \"currency\": \"rub\"\n        }\n    },\n    {\n        \"to\": \"pet-bonus\",\n        \"price\": {\n            \"countUnits\": 200,\n            \"currency\": \"usd\"\n        }\n    }\n]"
 										},
 										"url": {
 											"raw": "http://localhost:8083/admin/currency",

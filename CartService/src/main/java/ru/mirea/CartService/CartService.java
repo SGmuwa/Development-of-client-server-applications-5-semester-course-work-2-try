@@ -172,7 +172,7 @@ public class CartService {
                 System.out.println("Вычисления" + (cs.changeValue_toUSD(balance.getBalance(), balance.getCurrency_name())));
                 System.out.println("вычисления"+ cartElement.getPrice());
 
-                //String tmpString2 = restTemplate.postForObject("http://localhost:8083/admin/update/balance/{id}/{balance}",request, String.class,cartElement.getUser_id(), tmpBalance - cartElement.getPrice());
+                //String tmpString2 = restTemplate.postForObject("http://localhost:8083/admin/update/balance/{id}/{balance}",request, String.class,cartElement.getUser_id(), tmpBalance - cartElement.calculate());
                 ResponseEntity<String> listResponse3 = restTemplate.exchange("http://localhost:8083/admin/update/balance/{id}/{balance}", HttpMethod.POST,entity, String.class, cartElement.getUser_id(), tmpBalance - cartElement.getPrice());
                 String tmpString2 = listResponse3.getBody();
 

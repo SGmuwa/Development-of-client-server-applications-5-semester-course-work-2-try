@@ -70,8 +70,8 @@ public class ControllersTest {
     @Test
     public void currency_buy() {
         ccAdmin.update(Arrays.asList(
-                new CurrencyConvert("rub", "usd", 70235234), // 70 рублей
-                new CurrencyConvert("usd", "rub", 21341) // 2 цента
+                new CurrencyConvert("rub", "usd", 702354), // 70 рублей
+                new CurrencyConvert("usd", "rub", 213) // 2 цента
         ));
         User user = new User(
                 2, Arrays.asList(
@@ -91,6 +91,9 @@ public class ControllersTest {
         Collection<?> cash = responseEntity2.getBody();
         assertNotNull(cash);
         assertFalse(cash.isEmpty());
+        for(Object m : cash) {
+            log.info(m);
+        }
         assertTrue(cash.containsAll(
                 Arrays.asList(
                         new Money(0, "rub"),

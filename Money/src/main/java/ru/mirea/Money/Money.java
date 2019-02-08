@@ -82,26 +82,26 @@ public class Money implements Comparable<Money> {
      * Вычисление, сколько будет денег, если прибавить к текущим ещё денег.
      * @param value Сколько нужно добавить денег к текущим?
      * @return Новый экземпляр состояния денег.
-     * @throws Exception Не поддерживается работа с разными валютами.
+     * @throws MoneyException Не поддерживается работа с разными валютами.
      */
-    public Money plus(Money value) throws Exception {
+    public Money plus(Money value) throws MoneyException {
         if(this.currency.equals(value.currency))
             return plus(value.penny);
         else
-            throw new Exception("Currency not equal: " + this.currency + " and " + value.currency);
+            throw new MoneyException("Currency not equal: " + this.currency + " and " + value.currency);
     }
 
     /**
      * Вычисление, сколько будет денег, если отнять от текущих денег заданную сумму денег.
      * @param value Сколько нужно отнять денег из текущих?
      * @return Новый экземпляр состояния денег.
-     * @throws Exception Не поддерживается работа с разными валютами.
+     * @throws MoneyException Не поддерживается работа с разными валютами.
      */
-    public Money minus(Money value) throws Exception {
+    public Money minus(Money value) throws MoneyException {
         if(this.currency.equals(value.currency))
             return minus(value.penny);
         else
-            throw new Exception("Currency not equal: " + this.currency + " and " + value.currency);
+            throw new MoneyException("Currency not equal: " + this.currency + " and " + value.currency);
     }
 
     /**
@@ -165,7 +165,11 @@ public class Money implements Comparable<Money> {
      */
     @Override
     public int compareTo(Money o) throws RuntimeException {
-        return compare(this, o);
+        try {
+            return compare(this, o);
+        } catch (MoneyException me) {
+            throw new RuntimeException(me.getLocalizedMessage());
+        }
     }
 
     /**
@@ -175,12 +179,12 @@ public class Money implements Comparable<Money> {
      * @return the value 0 if {@code x == y};
      * a value less than 0 if {@code x < y};
      * and a value greater than 0 if {@code x > y}.
-     * @throws RuntimeException Эти деньги несравнимы, так как у них разная валюта.
+     * @throws MoneyException Эти деньги несравнимы, так как у них разная валюта.
      */
-    public static int compare(Money x, Money y) throws RuntimeException {
+    public static int compare(Money x, Money y) throws MoneyException {
         if(x.getCurrency().equals(y.getCurrency()))
             return Long.compare(x.penny, y.penny);
         else
-            throw new RuntimeException("Can't compare: " + x + " and " + y);
+            throw new MoneyException("Can't compare: " + x + " and " + y);
     }
 }

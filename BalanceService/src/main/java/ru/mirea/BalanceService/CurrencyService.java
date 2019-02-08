@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.mirea.Money.Money;
+import ru.mirea.Money.MoneyException;
 
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -49,7 +50,7 @@ public class CurrencyService {
     }
 
     /**
-     * Функция, которая расчитывает стоимость покупки новой валюты из старой.
+     * Функция, которая расчитывает, сколько новой валюты вы получите за старую валюту.
      * @param from Сколько человек готов заплатить за новую валюту?
      * @param target Название новой валюты.
      * @return Деньги в новой валюте.
@@ -57,7 +58,10 @@ public class CurrencyService {
      */
     Money howMuchYouGetNewCurrencyFromOldCurrency(Money from, String target) throws Exception {
         CurrencyConvert convert = getCurrency(from.getCurrency(), target);
-        return new Money(convert.convertUndo(from.getPenny()), target);
+        return new Money(
+                convert.getPrice().howMuchICanBuy(from.getPenny()),
+                target
+        );
     }
 
     /**
@@ -70,7 +74,7 @@ public class CurrencyService {
      */
     Money howMuchYouNeedOldCurrencyForBuyCurrentNewCurrency(String from, Money target) throws Exception {
         CurrencyConvert convert = getCurrency(from, target.getCurrency());
-        return new Money(convert.convert(target.getPenny()), from);
+        return convert.getPrice().calculate(target.getPenny());
     }
 
     /**
@@ -96,16 +100,17 @@ public class CurrencyService {
      * @param add Конвектор, который надо обновить или добавить.
      */
     void addConvert(CurrencyConvert add) {
+        add.ready();
         jdbcTemplate.update(
                 "DELETE FROM currencyservice WHERE currencyNameFrom = ? AND currencyNameTo = ?",
-                add.getFrom(),
+                add.getPrice().getCurrency(),
                 add.getTo()
         );
         jdbcTemplate.update(
                 "INSERT currencyservice VALUES (?, ?, ?)",
-                add.getFrom(),
+                add.getPrice().getCurrency(),
                 add.getTo(),
-                add.getCostPennyPennyPenny()
+                add.getPrice().getCountUnits()
         );
     }
 
@@ -117,7 +122,7 @@ public class CurrencyService {
      * @throws Exception В базе данных нет информации по поводу перевода данных валют,
      * либо присутствуют анамалии.
      */
-    private CurrencyConvert getCurrency(String from, String target) throws Exception {
+    private CurrencyConvert getCurrency(String from, String target) throws MoneyException {
         List<CurrencyConvert> list = jdbcTemplate.query("SELECT * FROM currencyService WHERE currencynamefrom=? AND currencynameto=?",
                 currencyConvertMapper,
                 from,
@@ -127,13 +132,15 @@ public class CurrencyService {
                 log.warn(String.format("Can't find currencyConvert: %1s %2s", from, target));
             else// if(list.size() > 1)
                 log.error(String.format("To much for currencyConvert! (%d) : %s %s", list.size(), from, target));
-            throw new Exception("you can't buy currency: from " + from + " target " + target); // Нельзя продавать валюту когда нет цены или
+            throw new MoneyException("you can't buy currency: from " + from + " target " + target); // Нельзя продавать валюту когда нет цены или
         }
         CurrencyConvert convert = list.get(0);
-        if(convert.ready())
+        try {
+            convert.ready();
             return convert;
-        else
-            throw new Exception("you can't buy currency: from " + from + " target " + target);
+        } catch (RuntimeException e) {
+            throw new MoneyException(e.getLocalizedMessage() + " You can't buy currency: from " + from + " target " + target);
+        }
     }
 
     /**
