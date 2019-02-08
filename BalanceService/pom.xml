@@ -15,12 +15,14 @@
         <dependency>
             <groupId>ru.mirea</groupId>
             <artifactId>ConfigurationClient</artifactId>
-            <version>${versions.KSP_LAB3_result}</version>
         </dependency>
         <dependency>
             <groupId>ru.mirea</groupId>
             <artifactId>defaultFilter</artifactId>
-            <version>${versions.KSP_LAB3_result}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.mirea</groupId>
+            <artifactId>Money</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

@@ -1,20 +1,25 @@
-package ru.mirea.BalanceService;
+package ru.mirea.Money;
 
 import java.util.ArrayList;
 
 /**
  * Описывает состояние кошелька, который может хранить в себе только одну валюту.
  * @author <a href="https://github.com/SGmuwa">[SG]Muwa<a/>
+ * @since 1.0
  */
 public class Money implements Comparable<Money> {
 
+    /**
+     * Данный конструктор необходим для того, чтобы можно было
+     * из json кода преобразовать в данный класс java.
+     */
     public Money() {
         penny = 0;
         currency = "";
     }
 
     /**
-     * Создание нового состояние одновалютного кошелька.
+     * Создание нового <b>состояния</b> одновалютного кошелька.
      * @param penny Количество <a href=https://ru.wikipedia.org/wiki/%D0%A1%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D1%83%D1%8E%D1%89%D0%B8%D0%B5_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B4%D0%B5%D0%BD%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5_%D0%B5%D0%B4%D0%B8%D0%BD%D0%B8%D1%86%D1%8B>
      *                   разменных денежных единиц</a> в кошельке.
      * @param currency Валюта денежных единиц кошелька.
@@ -34,7 +39,7 @@ public class Money implements Comparable<Money> {
     private final long penny;
 
     /**
-     * Валюта, в которой содержится баланс.
+     * Название валюты, в которой содержится баланс.
      */
     private final String currency;
 
@@ -59,7 +64,7 @@ public class Money implements Comparable<Money> {
      * @return Новый экземпляр состояния денег.
      * @throws ArithmeticException Превышена точность long.
      */
-    Money plus(long value) throws ArithmeticException {
+    public Money plus(long value) throws ArithmeticException {
         return new Money(Math.addExact(penny, value), currency);
     }
 
@@ -69,7 +74,7 @@ public class Money implements Comparable<Money> {
      * @return Новый экземпляр состояния денег.
      * @throws ArithmeticException Превышена точность long.
      */
-    Money minus(long value) throws ArithmeticException {
+    public Money minus(long value) throws ArithmeticException {
         return new Money(Math.subtractExact(penny, value), currency);
     }
 
@@ -79,7 +84,7 @@ public class Money implements Comparable<Money> {
      * @return Новый экземпляр состояния денег.
      * @throws Exception Не поддерживается работа с разными валютами.
      */
-    Money plus(Money value) throws Exception {
+    public Money plus(Money value) throws Exception {
         if(this.currency.equals(value.currency))
             return plus(value.penny);
         else
@@ -92,7 +97,7 @@ public class Money implements Comparable<Money> {
      * @return Новый экземпляр состояния денег.
      * @throws Exception Не поддерживается работа с разными валютами.
      */
-    Money minus(Money value) throws Exception {
+    public Money minus(Money value) throws Exception {
         if(this.currency.equals(value.currency))
             return minus(value.penny);
         else
@@ -106,7 +111,7 @@ public class Money implements Comparable<Money> {
      * @return Список сумм, сколько им положено.
      * @throws RuntimeException {@code count} должен быть положительным числом.
      */
-    ArrayList<Money> div(short count) {
+    public ArrayList<Money> div(short count) {
         if(count < 1)
             throw new RuntimeException("count must be positive");
         ArrayList<Money> out = new ArrayList<>(count);

@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
+import ru.mirea.Money.Money;
 
 import java.sql.ResultSet;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**

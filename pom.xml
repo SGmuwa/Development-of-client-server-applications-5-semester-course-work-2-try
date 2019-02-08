@@ -24,17 +24,12 @@
         <module>defaultFilter</module>
         <module>ConfigurationService</module>
         <module>ConfigurationClient</module>
+        <module>Money</module>
     </modules>
 
     <properties>
-        <java.version>1.9</java.version>
-        <maven.compiler.source>1.9</maven.compiler.source>
-        <maven.compiler.target>1.9</maven.compiler.target>
-        <versions.spring>2.1.2.RELEASE</versions.spring>
-        <versions.spring.security>5.1.3.RELEASE</versions.spring.security>
-        <versions.spring.cloud-configure-client.spring-cloud-config-client>2.0.2.RELEASE</versions.spring.cloud-configure-client.spring-cloud-config-client>
-        <versions.spring.cloud-configure-client.spring-cloud-starter-bus-amqp>2.0.0.RELEASE</versions.spring.cloud-configure-client.spring-cloud-starter-bus-amqp>
-        <versions.h2>1.4.197</versions.h2>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <versions.KSP_LAB3_result>1.0</versions.KSP_LAB3_result>
     </properties>
 
@@ -50,15 +45,46 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ru.mirea</groupId>
+                <artifactId>defaultFilter</artifactId>
+                <scope>compile</scope>
+                <version>${versions.KSP_LAB3_result}</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.mirea</groupId>
+                <artifactId>Money</artifactId>
+                <scope>compile</scope>
+                <version>${versions.KSP_LAB3_result}</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.mirea</groupId>
+                <artifactId>Tokens</artifactId>
+                <scope>compile</scope>
+                <version>${versions.KSP_LAB3_result}</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.mirea</groupId>
+                <artifactId>ConfigurationClient</artifactId>
+                <version>${versions.KSP_LAB3_result}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

@@ -5,6 +5,7 @@ import org.apache.juli.logging.LogFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import ru.mirea.Money.Money;
 
 import java.sql.ResultSet;
 import java.util.Collection;

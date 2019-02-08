@@ -12,16 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.mirea.Tokens.PayloadToken;
+import ru.mirea.Money.Money;
 import ru.mirea.Tokens.TokenFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 
 import static org.junit.Assert.*;
-import static ru.mirea.Tokens.Role.ADMIN;
 import static ru.mirea.Tokens.Role.USER;
 
 @SpringBootTest

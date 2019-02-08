@@ -1,8 +1,7 @@
 package TestHttp;
 import com.fasterxml.jackson.core.JsonProcessingException;
         import com.fasterxml.jackson.databind.ObjectMapper;
-        import org.apache.commons.codec.digest.DigestUtils;
-        import org.junit.Test;
+import org.junit.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
         import org.springframework.http.HttpHeaders;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpEntity;
         import org.springframework.web.client.RestTemplate;
         import ru.mirea.CartService.Item;
 import ru.mirea.Tokens.PayloadToken;
-import ru.mirea.Tokens.Role;
 import ru.mirea.Tokens.TokenFactory;
 
 import java.util.List;
@@ -42,6 +40,6 @@ public class TestHttpResponse {
         List<Item> itemList = listResponse2.getBody();
         assertNotNull(itemList);
         assertTrue(itemList.size() >= 2);
-        System.out.println(itemList.get(0).getType()+"   "+ itemList.get(1).getType());
+        System.out.println(itemList.get(0).getDescription()+"   "+ itemList.get(1).getDescription());
     }
 }

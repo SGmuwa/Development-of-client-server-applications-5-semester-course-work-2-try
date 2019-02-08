@@ -12,50 +12,184 @@
 					"name": "Balance",
 					"item": [
 						{
-							"name": "Получить все кошельки пользователей",
+							"name": "Admin",
+							"item": [
+								{
+									"name": "Получить кошелёк заданного пользователя",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+												"description": "Админ ид 1",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "http://localhost:8083/admin?user_id=1",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"admin"
+											],
+											"query": [
+												{
+													"key": "user_id",
+													"value": "1",
+													"description": "Идентификатор пользователя, который нас интересует"
+												}
+											]
+										},
+										"description": "Необходимы права администратора"
+									},
+									"response": []
+								},
+								{
+									"name": "Получить все кошельки пользователей",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "970a8930-89c5-40e7-b6bf-2e7e81de17c6",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+												"description": "Админ 1 ид",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "http://localhost:8083/admin",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"admin"
+											]
+										},
+										"description": "Нужны права администратора"
+									},
+									"response": []
+								},
+								{
+									"name": "Установить баланс пользователю",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+												"description": "Админ ид 1",
+												"type": "text"
+											},
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"user_id\": 1,\n    \"balance\": [\n        {\n            \"currency\": \"rub\",\n            \"penny\": 100000\n        },\n        {\n        \t\"currency\": \"usd\",\n        \t\"penny\": 1201\n        }\n    ]\n}"
+										},
+										"url": {
+											"raw": "http://localhost:8083/admin/user",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"admin",
+												"user"
+											]
+										},
+										"description": "Устанавливает абсолютно все кошельки ему."
+									},
+									"response": []
+								},
+								{
+									"name": "Очистить БД",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+												"description": "Админ ид 1",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "http://localhost:8083/admin",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"admin"
+											]
+										}
+									},
+									"response": []
+								}
+							],
 							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "c9fd0a77-2ba2-4d97-9d0d-1ea8928c1c86",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
 								{
 									"listen": "test",
 									"script": {
-										"id": "970a8930-89c5-40e7-b6bf-2e7e81de17c6",
+										"id": "9871d5e4-2b16-4309-be9b-4dfff3df50b5",
+										"type": "text/javascript",
 										"exec": [
 											""
-										],
-										"type": "text/javascript"
+										]
 									}
 								}
 							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
-										"description": "Админ 1 ид",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://localhost:8083/admin",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"admin"
-									]
-								},
-								"description": "Нужны права администратора"
-							},
-							"response": []
+							"_postman_isSubFolder": true
 						},
 						{
 							"name": "Получить кошелёк текущего пользователя",
@@ -87,51 +221,202 @@
 								"description": "Текущий пользователь определяется токеном."
 							},
 							"response": []
-						},
-						{
-							"name": "Установить баланс пользователю",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
-										"description": "Админ ид 1",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"user_id\": 1,\n    \"balance\": [\n        {\n            \"currency\": \"rub\",\n            \"penny\": 100000\n        },\n        {\n        \t\"currency\": \"usd\",\n        \t\"penny\": 1200\n        }\n    ]\n}"
-								},
-								"url": {
-									"raw": "http://localhost:8083/admin/user",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"admin",
-										"user"
-									]
-								},
-								"description": "Устанавливает абсолютно все кошельки ему."
-							},
-							"response": []
 						}
 					],
 					"_postman_isSubFolder": true
 				},
 				{
 					"name": "Currency",
-					"item": [],
+					"item": [
+						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "Получить пример курсов валют",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+												"description": "Админ ид 1",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "http://localhost:8083/admin/currency/example",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"admin",
+												"currency",
+												"example"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Установить ценник на курсы",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											},
+											{
+												"key": "token",
+												"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+												"description": "Админ ид 1",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "[\n    {\n        \"from\": \"rub\",\n        \"to\": \"usd\",\n        \"costPennyPennyPenny\": 70235234\n    },\n    {\n        \"from\": \"usd\",\n        \"to\": \"rub\",\n        \"costPennyPennyPenny\": 21341\n    },\n    {\n    \t\"from\": \"rub\",\n    \t\"to\": \"pet-bonus\",\n    \t\"costPennyPennyPenny\": 1000000\n    },\n    {\n    \t\"from\": \"usd\",\n    \t\"to\": \"pet-bonus\",\n    \t\"costPennyPennyPenny\": 20000\n    }\n]"
+										},
+										"url": {
+											"raw": "http://localhost:8083/admin/currency",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"admin",
+												"currency"
+											]
+										},
+										"description": "Тут ещё можно установить ценник на пет-бонусы"
+									},
+									"response": []
+								},
+								{
+									"name": "Очистить БД курсов",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+												"description": "Админ ид 1",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "http://localhost:8083/admin/currency",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"admin",
+												"currency"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Получить все цены курсов валют",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+										"description": "Админ ид 1",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8083/user/currency",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8083",
+									"path": [
+										"user",
+										"currency"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Купить валюты",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "eyJ0eXBlIjoiUHVwaXNoZXZhU2lkb3JlbmtvIiwiaGFzaE5hbWUiOiJTSEEtNTEyIn0=.eyJpZCI6MSwibG9naW4iOiJsb2dpbiIsInJvbGUiOlsiQURNSU4iXX0=.58d612b49e99ef039e18ebad927c2316860ba529b820fb344f4ed71918f21688111c5b069f76e07bacc0076fde3b3f5e7563c3008d89a7e5f23a34c72524c63d",
+										"description": "Админ ид 1",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:8083/user/currency/buy_currency?from=rub&to=pet-bonus&count=100",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8083",
+									"path": [
+										"user",
+										"currency",
+										"buy_currency"
+									],
+									"query": [
+										{
+											"key": "from",
+											"value": "rub",
+											"description": "Какую валюту потратим?"
+										},
+										{
+											"key": "to",
+											"value": "pet-bonus",
+											"description": "Какую валюту хотим получить?"
+										},
+										{
+											"key": "count",
+											"value": "100",
+											"description": "Сколько копеек валюты хотим?"
+										}
+									]
+								},
+								"description": "Покупка одного бонуса"
+							},
+							"response": []
+						}
+					],
 					"_postman_isSubFolder": true
 				}
 			]

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.ResultSet;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -105,7 +106,20 @@ public class CartService {
      * @param user_id Идентификатор пользователя, который хочет оплатить корзину.
      */
     void pay(long user_id) {
-        
+        List<CartElement> buy = get(user_id);
+        clear(user_id);
+        List<Item> price = getPrice(buy);
+    }
+
+    /**
+     * Узнаёт цену предметов.
+     * @param help Список предметов, цену которых надо узнать.
+     * @return Список покупок. Если в help было записано 3 молока, то вернётся
+     * 3 элемента "молоко" с подписью их цены.
+     */
+    private List<Item> getPrice(Collection<CartElement> help) {
+        new RestTemplate()
+                .postForObject("http://localhost:8081/get")
     }
 
     String payOld(int user_id){
@@ -193,8 +207,8 @@ public class CartService {
 
 
         if (itemList.get(id-1).getCount() > 0)
-            if ((item.getType().equals(type))) {
-                System.out.println(item.getPrice()+"  "+item.getId()+"  "+item.getType());
+            if ((item.getDescription().equals(type))) {
+                System.out.println(item.getPrice()+"  "+item.getItem_id()+"  "+item.getDescription());
                 String strResult = jdbcTemplate.putItem_inCart(type, user_id, id,item.getPrice());
                 return strResult;
             }

@@ -15,36 +15,34 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${versions.spring}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>${versions.spring}</version>
         </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${versions.h2}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
         </dependency>
         <dependency>
             <groupId>ru.mirea</groupId>
             <artifactId>defaultFilter</artifactId>
             <version>${versions.KSP_LAB3_result}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.mirea</groupId>
+            <artifactId>Money</artifactId>
         </dependency>
     </dependencies>
     <properties>
